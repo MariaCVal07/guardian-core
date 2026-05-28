@@ -1,20 +1,27 @@
 import { test, expect } from '@playwright/test';
 
-test('T001: Validate credit card payment', async ({ page }) => {
+test('Validar login exitoso SauceDemo', async ({ page }) => {
+
+  test.setTimeout(10000);
+
   // Arrange
-  const url = 'https://example.com/payment';
-  const creditCardNumber = '4111111111111111';
-  const expirationDate = '12/2025';
-  const cvv = '123';
+  const url = 'https://www.saucedemo.com/';
+  const username = 'standard_user';
+  const password = 'secret_sauce';
 
   // Act
   await page.goto(url);
-  await page.fill('input[name="creditCardNumber"]', creditCardNumber);
-  await page.fill('input[name="expirationDate"]', expirationDate);
-  await page.fill('input[name="cvv"]', cvv);
-  await page.click('button[type="submit"]');
+
+  await page.fill('[data-test="username"]', username);
+  await page.fill('[data-test="password"]', password);
+
+  await page.click('[data-test="login-button"]');
 
   // Assert
-  await expect(page).toHaveURL('https://example.com/payment/success');
-  await expect(page.locator('text=Payment successful')).toBeVisible();
+  await expect(page).toHaveURL(/inventory/);
+
+  await expect(
+    page.locator('.title')
+  ).toContainText('Products');
+
 });
