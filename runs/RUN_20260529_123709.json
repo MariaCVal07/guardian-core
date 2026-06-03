@@ -1,0 +1,47 @@
+{
+    "run_id": "RUN_20260529_123709",
+    "created_at": "20260529_123709",
+    "data": {
+        "requirement": "\nCuando un usuario realiza un login correcto\ndebe acceder al inventario principal.\n",
+        "analysis": {
+            "criticality": "low",
+            "business_impact": "Bajo impacto en el negocio, ya que el acceso al inventario principal es una funcionalidad básica",
+            "affected_flows": [
+                "Flujo de login correcto",
+                "Flujo de acceso al inventario principal"
+            ],
+            "potential_risks": [
+                "Riesgo de acceso no autorizado al inventario principal",
+                "Riesgo de falla en la autenticación del usuario"
+            ],
+            "recommended_tests": [
+                {
+                    "test_id": "T001",
+                    "title": "Verificar acceso al inventario principal después de login correcto",
+                    "description": "Verificar que el usuario pueda acceder al inventario principal después de realizar un login correcto",
+                    "test_type": "functional",
+                    "priority": "high"
+                },
+                {
+                    "test_id": "T002",
+                    "title": "Verificar acceso no autorizado al inventario principal",
+                    "description": "Verificar que un usuario no autorizado no pueda acceder al inventario principal",
+                    "test_type": "security",
+                    "priority": "high"
+                },
+                {
+                    "test_id": "T003",
+                    "title": "Verificar estabilidad del release al acceder al inventario principal",
+                    "description": "Verificar que el acceso al inventario principal no cause fallas en el sistema",
+                    "test_type": "smoke",
+                    "priority": "medium"
+                }
+            ]
+        },
+        "generated_test": "import { test, expect } from '@playwright/test';\n\ntest('T001: Verificar acceso al inventario principal despu\\u00e9s de login correcto', async ({ page }) => {\n  // Arrange\n  await page.goto('/login');\n  await page.fill('input[name=\"username\"]', 'usuario');\n  await page.fill('input[name=\"password\"]', 'contraseña');\n  await page.click('button[type=\"submit\"]');\n\n  // Act\n  await page.click('text=Inventario principal');\n\n  // Assert\n  await expect(page.locator('text=Inventario principal')).toBeVisible();\n});\n\ntest('T002: Verificar acceso no autorizado al inventario principal', async ({ page }) => {\n  // Arrange\n  await page.goto('/inventario-principal');\n\n  // Act\n  await page.click('text=Inventario principal');\n\n  // Assert\n  await expect(page.locator('text=Acceso no autorizado')).toBeVisible();\n});\n\ntest('T003: Verificar estabilidad del release al acceder al inventario principal', async ({ page }) => {\n  // Arrange\n  await page.goto('/login');\n  await page.fill('input[name=\"username\"]', 'usuario');\n  await page.fill('input[name=\"password\"]', 'contraseña');\n  await page.click('button[type=\"submit\"]');\n\n  // Act\n  await page.click('text=Inventario principal');\n\n  // Assert\n  await expect(page.locator('text=Inventario principal')).toBeVisible();\n  await expect(page.locator('text=No se han encontrado errores')).toBeVisible();\n});",
+        "execution_result": {
+            "success": false,
+            "error": "Execution timeout exceeded"
+        }
+    }
+}

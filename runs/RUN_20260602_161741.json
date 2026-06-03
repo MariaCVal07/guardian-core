@@ -1,0 +1,47 @@
+{
+    "run_id": "RUN_20260602_161741",
+    "created_at": "20260602_161741",
+    "data": {
+        "requirement": "\nCuando un usuario realiza un login correcto\ndebe acceder al inventario principal.\n",
+        "analysis": {
+            "criticality": "low",
+            "business_impact": "Bajo",
+            "affected_flows": [
+                "Login",
+                "Acceso al inventario principal"
+            ],
+            "potential_risks": [
+                "Fallo en la autenticación del usuario",
+                "Acceso no autorizado al inventario principal"
+            ],
+            "recommended_tests": [
+                {
+                    "test_id": "LT-001",
+                    "title": "Verificar acceso al inventario principal después de login correcto",
+                    "description": "Comprobar que el usuario puede acceder al inventario principal después de realizar un login correcto",
+                    "test_type": "functional",
+                    "priority": "high"
+                },
+                {
+                    "test_id": "IT-001",
+                    "title": "Verificar integración con sistema de autenticación",
+                    "description": "Comprobar que el sistema de autenticación funciona correctamente y permite el acceso al inventario principal",
+                    "test_type": "integration",
+                    "priority": "medium"
+                },
+                {
+                    "test_id": "ST-001",
+                    "title": "Verificar estabilidad del release",
+                    "description": "Comprobar que el release no presenta problemas de estabilidad que afecten el acceso al inventario principal",
+                    "test_type": "smoke",
+                    "priority": "low"
+                }
+            ]
+        },
+        "generated_test": "\nimport { test, expect } from '@playwright/test';\n\ntest('Validar login exitoso SauceDemo', async ({ page }) => {\n\n  test.setTimeout(10000);\n\n  // Arrange\n  const url = 'https://www.saucedemo.com/';\n  const username = 'standard_user';\n  const password = 'secret_sauce';\n\n  // Act\n  await page.goto(url);\n\n  await page.fill('[data-test=\"username\"]', username);\n  await page.fill('[data-test=\"password\"]', password);\n\n  await page.click('[data-test=\"login-button\"]');\n\n  // Assert\n  await expect(page).toHaveURL(/inventory/);\n\n  await expect(\n    page.locator('.title')\n  ).toContainText('Products');\n\n});\n",
+        "execution_result": {
+            "success": false,
+            "error": "Execution timeout exceeded"
+        }
+    }
+}
