@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Guardian QA AI</title>
+</head>
+
+<body>
+
+    <h1>GUARDIÁN QA AI</h1>
+
+    <form action="/analyze" method="post">
+
+        <h2>Contexto de Negocio</h2>
+
+        <label>Industria</label>
+        <br>
+        <input
+            type="text"
+            name="industry"
+            size="80"
+            placeholder="Ej: Banca, Ecommerce, Salud"
+        >
+
+        <br><br>
+
+        <label>Producto</label>
+        <br>
+        <input
+            type="text"
+            name="product"
+            size="80"
+            placeholder="Ej: Portal Bancario"
+        >
+
+        <br><br>
+
+        <label>Módulo</label>
+        <br>
+        <input
+            type="text"
+            name="module"
+            size="80"
+            placeholder="Ej: Login"
+        >
+
+        <br><br>
+
+        <label>Descripción del negocio</label>
+        <br>
+        <textarea
+            name="business_description"
+            rows="6"
+            cols="100"
+        ></textarea>
+
+        <br><br>
+
+        <h2>Requerimiento Funcional</h2>
+
+        <textarea
+            name="requirement"
+            rows="6"
+            cols="100"
+        ></textarea>
+
+        <br><br>
+
+        <h2>Criterios de Aceptación</h2>
+
+        <textarea
+            name="acceptance_criteria"
+            rows="8"
+            cols="100"
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Analizar
+        </button>
+
+    </form>
+
+</body>
+
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Guardian Analysis</title>
+
+</head>
+
+<body>
+
+    <h1>GUARDIÁN QA</h1>
+
+    <hr>
+
+    <h2>Industria</h2>
+    <p>{{ industry }}</p>
+
+    <h2>Producto</h2>
+    <p>{{ product }}</p>
+
+    <h2>Módulo</h2>
+    <p>{{ module }}</p>
+
+    <h2>Descripción del Negocio</h2>
+    <pre>{{ business_description }}</pre>
+
+    <hr>
+
+    <h2>Requerimiento Funcional</h2>
+    <pre>{{ requirement }}</pre>
+
+    <hr>
+
+    <h2>Criterios de Aceptación</h2>
+    <pre>{{ acceptance_criteria }}</pre>
+
+    <hr>
+
+    <h1>ANÁLISIS DE RIESGO</h1>
+
+    <h2>Criticidad</h2>
+    <p>{{ analysis.criticality }}</p>
+
+    <h2>Impacto de Negocio</h2>
+    <p>{{ analysis.business_impact }}</p>
+
+    <h2>Risk Score</h2>
+
+    <h1>{{ risk_score }}/100</h1>
+
+    <h2>Flujos Afectados</h2>
+
+    <ul>
+
+        {% for flow in analysis.affected_flows %}
+
+            <li>{{ flow }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+    <h2>Riesgos Potenciales</h2>
+
+    <ul>
+
+        {% for risk in analysis.potential_risks %}
+
+            <li>{{ risk }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+    <hr>
+
+    <h1>TEST STRATEGY</h1>
+
+    <ul>
+
+        {% for item in strategy %}
+
+            <li>{{ item }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+    <hr>
+
+    <h1>TEST DESIGN</h1>
+
+    <ul>
+
+        {% for tc in test_design %}
+
+        <li>
+
+            <b>{{ tc.id }}</b>
+
+            <br><br>
+
+            {{ tc.title }}
+
+            <br>
+
+            {{ tc.description }}
+
+            <br><br>
+
+            Técnica:
+            {{ tc.technique }}
+
+            <br>
+
+            Prioridad:
+            {{ tc.priority }}
+
+            <br>
+
+            Tipo:
+            {{ tc.test_type }}
+
+            <br>
+
+            Automatizable:
+            {{ tc.automatable }}
+
+            <br><br>
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+    <hr>
+
+    <a href="/">
+        Volver
+    </a>
+
+</body>
+
+</html>

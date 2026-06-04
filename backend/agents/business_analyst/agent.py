@@ -1,4 +1,5 @@
 import os
+import json
 
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -7,117 +8,134 @@ load_dotenv()
 
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1",
-
     api_key=os.getenv("GROQ_API_KEY")
 )
 
 
 class BusinessAnalystAgent:
 
-    def analyze_requirement(self, requirement: str):
+    def analyze_requirement(
+
+        self,
+
+        industry,
+
+        product,
+
+        module,
+
+        business_description,
+
+        requirement,
+
+        acceptance_criteria
+    ):
 
         prompt = f"""
-            Eres un QA Senior especializado en:
+        Eres un QA Senior especializado en:
 
-            - análisis estratégico de negocio
-            - testing basado en riesgo
-            - prevención de regresiones críticas
-            - protección de flujos core del negocio
-            - estabilidad de releases
-            - impacto operacional
-            - validación de integraciones críticas
-            - análisis de riesgo funcional y financiero
+        - Testing basado en riesgo
+        - Risk Based Testing
+        - QA Strategy
+        - Business Analysis
+        - Software Quality Engineering
+        - Sistemas financieros
+        - Ecommerce
+        - Plataformas empresariales
 
-            Tu objetivo NO es únicamente validar funcionalidades.
+        CONTEXTO DEL NEGOCIO
 
-            Tu responsabilidad es proteger el negocio identificando:
-            - riesgos críticos
-            - impactos operacionales
-            - posibles regresiones
-            - fallas en flujos sensibles
-            - afectaciones financieras
-            - problemas de seguridad
-            - impactos en experiencia de usuario
+        Industria:
+        {industry}
 
-            Analiza el siguiente requerimiento:
+        Producto:
+        {product}
 
-            {requirement}
+        Módulo:
+        {module}
 
-            Debes identificar:
+        Descripción:
+        {business_description}
 
-            1. Nivel de criticidad
-            2. Impacto de negocio
-            3. Flujos afectados
-            4. Riesgos potenciales
-            5. Casos de prueba prioritarios
+        REQUERIMIENTO FUNCIONAL
 
-            REGLAS IMPORTANTES:
+        {requirement}
 
-            - Debes responder EXCLUSIVAMENTE JSON válido
-            - NO agregues explicaciones
-            - NO agregues comentarios
-            - NO agregues markdown
-            - NO agregues bloque ```json
-            - NO agregues texto antes o después del JSON
-            - La respuesta debe iniciar con {{
-            - La respuesta debe finalizar con }}
+        CRITERIOS DE ACEPTACIÓN
 
-            Las keys del JSON deben ser EXACTAMENTE estas:
+        {acceptance_criteria}
 
+        Analiza el requerimiento considerando:
+
+        - Contexto del negocio
+        - Riesgo operativo
+        - Riesgo financiero
+        - Riesgo reputacional
+        - Seguridad
+        - Integraciones
+        - Experiencia de usuario
+        - Impacto en producción
+
+        Debes identificar:
+
+        1. Nivel de criticidad
+        2. Impacto de negocio
+        3. Flujos afectados
+        4. Riesgos potenciales
+        5. Casos de prueba prioritarios
+
+        RESPONDE EXCLUSIVAMENTE JSON.
+
+        FORMATO OBLIGATORIO:
+
+        {{
+            "criticality": "",
+            "business_impact": "",
+            "affected_flows": [],
+            "potential_risks": [],
+            "recommended_tests": []
+        }}
+
+        El campo criticality solo puede ser:
+
+        - low
+        - medium
+        - high
+        - critical
+
+        El campo recommended_tests debe tener:
+
+        [
             {{
-                "criticality": "",
-                "business_impact": "",
-                "affected_flows": [],
-                "potential_risks": [],
-                "recommended_tests": []
+                "test_id": "",
+                "title": "",
+                "description": "",
+                "test_type": "",
+                "priority": ""
             }}
+        ]
 
-            NO cambies:
-            - nombres de propiedades
-            - idioma de propiedades
-            - estructura del JSON
+        test_type:
 
-            El campo "criticality" solo puede tener:
-            - low
-            - medium
-            - high
-            - critical
+        - functional
+        - integration
+        - security
+        - regression
+        - ui
+        - api
+        - smoke
 
-            El campo "recommended_tests" debe contener una lista de objetos con esta estructura EXACTA:
+        priority:
 
-            [
-                {{
-                    "test_id": "",
-                    "title": "",
-                    "description": "",
-                    "test_type": "",
-                    "priority": ""
-                }}
-            ]
+        - low
+        - medium
+        - high
+        - critical
 
-            El campo "priority" solo puede tener:
-            - low
-            - medium
-            - high
-            - critical
-
-            El campo "test_type" solo puede tener:
-            - functional
-            - integration
-            - security
-            - regression
-            - ui
-            - api
-            - smoke
-
-            Genera casos de prueba basados en:
-            - criticidad del negocio
-            - impacto operacional
-            - riesgo financiero
-            - seguridad
-            - integraciones
-            - estabilidad del release
-            """
+        No agregues markdown.
+        No agregues comentarios.
+        No agregues texto fuera del JSON.
+        """
 
         response = client.chat.completions.create(
 
@@ -126,7 +144,7 @@ class BusinessAnalystAgent:
             messages=[
                 {
                     "role": "system",
-                    "content": "Eres un QA experto."
+                    "content": "Eres un QA experto en Risk Based Testing."
                 },
                 {
                     "role": "user",
@@ -136,8 +154,6 @@ class BusinessAnalystAgent:
 
             temperature=0.2
         )
-
-        import json
 
         content = response.choices[0].message.content
 
