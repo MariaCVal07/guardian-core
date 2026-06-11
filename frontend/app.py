@@ -1,9 +1,15 @@
+# pyrefly: ignore [missing-import]
 from fastapi import FastAPI
+# pyrefly: ignore [missing-import]
 from fastapi import Request
+# pyrefly: ignore [missing-import]
 from fastapi import Form
 
+# pyrefly: ignore [missing-import]
 from fastapi.responses import HTMLResponse
+# pyrefly: ignore [missing-import]
 from fastapi.templating import Jinja2Templates
+from backend.automation_engine import AutomationEngine
 
 from backend.agents.business_analyst.agent import (
     BusinessAnalystAgent
@@ -97,16 +103,24 @@ def analyze(
     )
 
     # ==================================
-    # TEST DESIGN
-    # ==================================
+# TEST DESIGN
+# ==================================
 
     design_engine = TestDesignEngine()
 
     test_design = design_engine.generate_test_design(
-
         analysis,
-
         strategy
+    )
+
+    # ==================================
+    # AUTOMATION DECISION
+    # ==================================
+
+    automation_engine = AutomationEngine()
+
+    automation_decisions = automation_engine.evaluate(
+        test_design
     )
 
     return templates.TemplateResponse(
@@ -118,23 +132,15 @@ def analyze(
         context={
 
             "industry": industry,
-
             "product": product,
-
             "module": module,
-
             "business_description": business_description,
-
             "requirement": requirement,
-
             "acceptance_criteria": acceptance_criteria,
-
             "analysis": analysis,
-
             "risk_score": risk_score,
-
             "strategy": strategy,
-
-            "test_design": test_design
+            "test_design": test_design,
+            "automation_decisions": automation_decisions
         }
     )

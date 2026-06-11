@@ -1,4 +1,4 @@
-from templates.login_template import LOGIN_TEMPLATE
+from backend.templates.login_template import LOGIN_TEMPLATE
 
 class TemplateSelector:
 

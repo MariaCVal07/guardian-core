@@ -1,166 +1,144 @@
 class TestDesignEngine:
 
     def generate_test_design(
-
         self,
-
         analysis,
-
         strategy
     ):
 
-        test_cases = []
+        tests = []
 
-        for test in analysis.get(
-            "recommended_tests",
-            []
-        ):
+        counter = 1
 
-            title = test.get(
-                "title",
-                ""
-            ).lower()
+        for recommendation in analysis["recommended_tests"]:
 
-            description = test.get(
-                "description",
-                ""
-            ).lower()
+            title = recommendation["title"]
 
-            test_type = test.get(
-                "test_type",
-                ""
+            description = recommendation["description"]
+
+            test_type = recommendation["test_type"]
+
+            priority = recommendation["priority"]
+
+            scenario_type = self.detect_scenario_type(
+                title,
+                description
             )
 
-            technique = self.detect_technique(
-
-                title,
-
-                description,
-
+            design_technique = self.select_design_technique(
+                scenario_type,
                 test_type
             )
 
-            automatable = self.is_automatable(
-
+            execution_strategy = self.select_execution_strategy(
                 test_type,
-
-                technique
+                priority
             )
 
-            test_cases.append({
+            tests.append({
 
-                "id": test.get("test_id"),
+                "id": f"T{counter:03}",
 
-                "title": test.get("title"),
+                "title": title,
 
-                "description": test.get("description"),
+                "description": description,
 
-                "priority": test.get("priority"),
+                "scenario_type": scenario_type,
+
+                "design_technique": design_technique,
+
+                "execution_strategy": execution_strategy,
+
+                "priority": priority,
 
                 "test_type": test_type,
 
-                "technique": technique,
-
-                "automatable": automatable
+                "automatable": self.is_automatable(
+                    test_type
+                )
             })
 
-        return test_cases
+            counter += 1
 
-    def detect_technique(
+        return tests
 
+    def detect_scenario_type(
         self,
-
         title,
+        description
+    ):
 
-        description,
+        text = f"{title} {description}".lower()
 
+        if (
+            "duplicada" in text
+            or "inválido" in text
+            or "rechazar" in text
+            or "bloquear" in text
+        ):
+            return "Negative"
+
+        if (
+            "límite" in text
+            or "máximo" in text
+            or "mínimo" in text
+            or "saldo" in text
+        ):
+            return "Edge Case"
+
+        return "Positive"
+
+    def select_design_technique(
+        self,
+        scenario_type,
         test_type
     ):
 
-        text = f"{title} {description}"
-
-        # NEGATIVE TESTING
-
-        if any(word in text for word in [
-
-            "duplicado",
-            "duplicada",
-            "duplicados",
-            "duplicadas",
-            "univocidad",
-            "única",
-            "unica",
-            "solo exista",
-            "únicamente",
-            "unicamente",
-            "no permitir",
-            "rechazar"
-
-        ]):
-            return "Negative Testing"
-
-        # BOUNDARY VALUE
-
-        if any(word in text for word in [
-
-            "saldo",
-            "monto",
-            "limite",
-            "límite",
-            "balance"
-
-        ]):
+        if scenario_type == "Edge Case":
 
             return "Boundary Value Analysis"
 
-        # SECURITY
+        if scenario_type == "Negative":
 
-        if test_type == "security":
-
-            return "Security Testing"
-
-        # INTEGRATION
+            return "Error Guessing"
 
         if test_type == "integration":
 
-            return "Integration Testing"
+            return "Use Case Testing"
 
-        # REGRESSION
+        if test_type == "security":
 
-        if test_type == "regression":
+            return "Threat Based Testing"
 
-            return "Regression Testing"
+        return "Use Case Testing"
 
-        # UI
-
-        if test_type == "ui":
-
-            return "UI Validation"
-
-        return "Happy Path"
-
-    def is_automatable(
-
+    def select_execution_strategy(
         self,
-
         test_type,
-
-        technique
+        priority
     ):
 
-        if technique in [
+        if test_type == "security":
 
-            "Happy Path",
-            "Negative Testing",
-            "Boundary Value Analysis",
-            "Integration Testing"
+            return "Security"
 
-        ]:
+        if test_type == "integration":
 
-            return "Sí"
+            return "Integration"
+
+        if priority in ["high", "critical"]:
+
+            return "Regression"
+
+        return "Functional"
+
+    def is_automatable(
+        self,
+        test_type
+    ):
 
         if test_type == "security":
 
             return "Parcial"
 
-        return "No"
+        return "Sí"

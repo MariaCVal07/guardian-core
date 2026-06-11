@@ -109,8 +109,18 @@
 
             <br><br>
 
-            Técnica:
-            {{ tc.technique }}
+           Tipo de Caso:
+            {{ tc.scenario_type }}
+
+            <br>
+
+            Técnica de Diseño:
+            {{ tc.design_technique }}
+
+            <br>
+
+            Estrategia de Ejecución:
+            {{ tc.execution_strategy }}
 
             <br>
 
@@ -136,7 +146,39 @@
     </ul>
 
     <hr>
+    <hr>
 
+    <h1>AUTOMATION DECISION</h1>
+
+    <ul>
+
+        {% for item in automation_decisions %}
+
+        <li>
+
+        <b>{{ item.id }}</b>
+
+        <br><br>
+
+        {{ item.title }}
+
+        <br><br>
+
+        Decisión:
+        {{ item.decision }}
+
+        <br>
+
+        Razón:
+        {{ item.reason }}
+
+        <br><br>
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
     <a href="/">
         Volver
     </a>

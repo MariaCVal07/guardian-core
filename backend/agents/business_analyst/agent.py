@@ -1,15 +1,4 @@
-import os
-import json
-
-from openai import OpenAI
-from dotenv import load_dotenv
-
-load_dotenv()
-
-client = OpenAI(
-    base_url="https://api.groq.com/openai/v1",
-    api_key=os.getenv("GROQ_API_KEY")
-)
+from backend.llm_client import llm_call
 
 
 class BusinessAnalystAgent:
@@ -137,24 +126,8 @@ class BusinessAnalystAgent:
         No agregues texto fuera del JSON.
         """
 
-        response = client.chat.completions.create(
-
-            model="llama-3.1-8b-instant",
-
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Eres un QA experto en Risk Based Testing."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-
-            temperature=0.2
+        return llm_call(
+            system_prompt="Eres un QA experto en Risk Based Testing.",
+            user_prompt=prompt,
+            expect_json=True
         )
-
-        content = response.choices[0].message.content
-
-        return json.loads(content)

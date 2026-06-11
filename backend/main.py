@@ -1,12 +1,13 @@
 #EL CEREBRO DE GUARDIÁN.
 
-from agents.business_analyst.agent import BusinessAnalystAgent
-from agents.test_case_generator.agent import TestCaseGeneratorAgent
-from agents.execution_agent.agent import ExecutionAgent
+from backend.agents.business_analyst.agent import BusinessAnalystAgent
+from backend.agents.test_case_generator.agent import TestCaseGeneratorAgent
+from backend.agents.execution_agent.agent import ExecutionAgent
 
-from file_manager import FileManager
-from run_manager import RunManager
-from strategy_engine import StrategyEngine
+from backend.file_manager import FileManager
+from backend.run_manager import RunManager
+from backend.risk_engine import RiskEngine
+from backend.strategy_engine import StrategyEngine
 
 requirement = """
 Cuando un usuario realiza un login correcto
@@ -18,7 +19,12 @@ print("\n[1] Analizando requerimiento...\n")
 business_agent = BusinessAnalystAgent()
 
 analysis = business_agent.analyze_requirement(
-    requirement
+    industry="ecommerce",
+    product="SauceDemo",
+    module="login",
+    business_description="Demo store para pruebas de login",
+    requirement=requirement,
+    acceptance_criteria="Usuario accede al inventario tras login correcto"
 )
 
 print("ANALYSIS:")
@@ -29,7 +35,7 @@ print("Análisis completado.\n")
 
 print("[2] Seleccionando template QA...\n")
 
-from template_selector import TemplateSelector
+from backend.template_selector import TemplateSelector
 
 selector = TemplateSelector()
 
@@ -99,11 +105,24 @@ else:
 print("=====================================")
 
 
+risk_engine = RiskEngine()
+
+risk_score = risk_engine.calculate_risk(
+    industry="ecommerce",
+    module="login",
+    requirement=requirement
+)
+
 strategy_engine = StrategyEngine()
 
 strategy = strategy_engine.determine_strategy(
-    analysis
+    analysis,
+    risk_score
 )
+
+print("Risk score:")
+print(risk_score)
+print()
 
 print("Testing strategy:")
 print(strategy)

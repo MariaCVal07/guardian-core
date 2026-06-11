@@ -1,15 +1,6 @@
-import os
 import json
 
-from openai import OpenAI
-from dotenv import load_dotenv
-
-load_dotenv()
-
-client = OpenAI(
-    base_url="https://api.groq.com/openai/v1",
-    api_key=os.getenv("GROQ_API_KEY")
-)
+from backend.llm_client import llm_call
 
 
 class TestCaseGeneratorAgent:
@@ -44,23 +35,8 @@ class TestCaseGeneratorAgent:
         import {{ test, expect }} from '@playwright/test';
         """
 
-        response = client.chat.completions.create(
-
-            model="llama-3.1-8b-instant",
-
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Eres un experto en QA Automation."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-
-            temperature=0.2
+        return llm_call(
+            system_prompt="Eres un experto en QA Automation.",
+            user_prompt=prompt,
+            expect_json=False
         )
-
-        return response.choices[0].message.content
-        
