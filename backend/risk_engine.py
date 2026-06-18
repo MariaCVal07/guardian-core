@@ -13,11 +13,17 @@ class RiskEngine:
 
         score = 0
 
+        detected_risks = []
+
         industry = industry.lower()
+
         module = module.lower()
+
         requirement = requirement.lower()
 
-        # Industria
+        # ==========================
+        # INDUSTRIA
+        # ==========================
 
         if industry in [
 
@@ -30,6 +36,10 @@ class RiskEngine:
 
             score += 40
 
+            detected_risks.append(
+                "riesgo financiero"
+            )
+
         elif industry in [
 
             "salud",
@@ -38,6 +48,10 @@ class RiskEngine:
         ]:
 
             score += 35
+
+            detected_risks.append(
+                "riesgo regulatorio"
+            )
 
         elif industry in [
 
@@ -48,7 +62,9 @@ class RiskEngine:
 
             score += 20
 
-        # Módulo
+        # ==========================
+        # MODULO
+        # ==========================
 
         if module in [
 
@@ -62,6 +78,10 @@ class RiskEngine:
 
             score += 30
 
+            detected_risks.append(
+                "riesgo de transacción incorrecta"
+            )
+
         elif module in [
 
             "login",
@@ -72,23 +92,53 @@ class RiskEngine:
 
             score += 20
 
-        # Palabras críticas
+            detected_risks.append(
+                "riesgo de acceso no autorizado"
+            )
 
-        critical_words = [
+        # ==========================
+        # PALABRAS CLAVE
+        # ==========================
 
-            "dinero",
-            "saldo",
-            "wallet",
-            "credito",
-            "payment",
-            "transferencia",
-            "transfer"
-        ]
+        keywords = {
 
-        for word in critical_words:
+            "saldo":
+            "riesgo de saldo incorrecto",
 
-            if word in requirement:
+            "wallet":
+            "riesgo de wallet duplicada",
+
+            "transfer":
+            "riesgo de transferencia errónea",
+
+            "transferencia":
+            "riesgo de transferencia errónea",
+
+            "credito":
+            "riesgo financiero",
+
+            "payment":
+            "riesgo de pago incorrecto",
+
+            "dinero":
+            "riesgo financiero"
+        }
+
+        for keyword, risk in keywords.items():
+
+            if keyword in requirement:
 
                 score += 5
 
-        return min(score, 100)
+                if risk not in detected_risks:
+
+                    detected_risks.append(
+                        risk
+                    )
+
+        return {
+
+            "score": min(score, 100),
+
+            "detected_risks": detected_risks
+        }

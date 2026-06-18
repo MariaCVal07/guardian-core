@@ -16,53 +16,112 @@ class StrategyEngine:
             ""
         ).lower()
 
-        # Riesgo muy alto
+        risks = analysis.get(
+            "potential_risks",
+            []
+        )
 
-        if risk_score >= 80:
+        recommended_tests = analysis.get(
+            "recommended_tests",
+            []
+        )
 
-            strategy.extend([
+        # =====================================
+        # Siempre funcional
+        # =====================================
 
-                "functional",
+        strategy.append(
+            "functional"
+        )
 
-                "integration",
+        # =====================================
+        # Estrategia basada en riesgos
+        # =====================================
 
-                "security",
+        for risk in risks:
 
-                "regression",
+            risk_lower = risk.lower()
 
-                "e2e"
-            ])
+            if (
+                "seguridad" in risk_lower
+                or "autorizado" in risk_lower
+                or "credencial" in risk_lower
+            ):
 
-        # Riesgo medio
+                if "security" not in strategy:
 
-        elif risk_score >= 50:
+                    strategy.append(
+                        "security"
+                    )
 
-            strategy.extend([
+            if (
+                "integración" in risk_lower
+                or "externo" in risk_lower
+                or "pago" in risk_lower
+            ):
 
-                "functional",
+                if "integration" not in strategy:
 
-                "integration",
+                    strategy.append(
+                        "integration"
+                    )
 
-                "regression"
-            ])
+        # =====================================
+        # Estrategia basada en tests sugeridos
+        # =====================================
 
-        # Riesgo bajo
+        for test in recommended_tests:
 
-        else:
+            test_type = test.get(
+                "test_type",
+                ""
+            )
 
-            strategy.extend([
+            if (
+                test_type == "integration"
+                and "integration" not in strategy
+            ):
 
-                "functional"
-            ])
+                strategy.append(
+                    "integration"
+                )
 
-        # Refuerzo por criticidad detectada por IA
+            if (
+                test_type == "security"
+                and "security" not in strategy
+            ):
+
+                strategy.append(
+                    "security"
+                )
+
+        # =====================================
+        # Criticidad alta
+        # =====================================
+
+        if criticality in [
+
+            "high",
+
+            "critical"
+        ]:
+
+            if "regression" not in strategy:
+
+                strategy.append(
+                    "regression"
+                )
+
+        # =====================================
+        # Criticidad extrema
+        # =====================================
 
         if criticality == "critical":
 
-            if "security" not in strategy:
-                strategy.append("security")
-
             if "e2e" not in strategy:
-                strategy.append("e2e")
+
+                strategy.append(
+                    "e2e"
+                )
 
         return strategy

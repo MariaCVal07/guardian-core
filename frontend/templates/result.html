@@ -109,7 +109,7 @@
 
             <br><br>
 
-           Tipo de Caso:
+            Tipo de Caso:
             {{ tc.scenario_type }}
 
             <br>
@@ -137,7 +137,21 @@
             Automatizable:
             {{ tc.automatable }}
 
-            <br><br>
+            <br>
+
+            <b>Riesgos Cubiertos:</b>
+
+            <ul>
+
+                {% for risk in tc.covers_risks %}
+
+                    <li>{{ risk }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+            <br>
 
         </li>
 
@@ -145,7 +159,6 @@
 
     </ul>
 
-    <hr>
     <hr>
 
     <h1>AUTOMATION DECISION</h1>
@@ -156,29 +169,68 @@
 
         <li>
 
-        <b>{{ item.id }}</b>
+            <b>{{ item.id }}</b>
 
-        <br><br>
+            <br><br>
 
-        {{ item.title }}
+            {{ item.title }}
 
-        <br><br>
+            <br><br>
 
-        Decisión:
-        {{ item.decision }}
+            Decisión:
+            {{ item.decision }}
 
-        <br>
+            <br>
 
-        Razón:
-        {{ item.reason }}
+            Razón:
+            {{ item.reason }}
 
-        <br><br>
+            <br><br>
 
         </li>
 
         {% endfor %}
 
     </ul>
+
+    <hr>
+
+    <h1>RISK COVERAGE</h1>
+
+    <h2>Coverage</h2>
+
+    <h1>{{ risk_coverage.coverage_percent }}%</h1>
+
+    <h2>Total Risks</h2>
+
+    <p>{{ risk_coverage.total_risks }}</p>
+
+    <h2>Covered Risks</h2>
+
+    <ul>
+
+        {% for risk in risk_coverage.covered_risks %}
+
+            <li>{{ risk }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+    <h2>Uncovered Risks</h2>
+
+    <ul>
+
+        {% for risk in risk_coverage.uncovered_risks %}
+
+            <li>{{ risk }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+    <hr>
+
     <a href="/">
         Volver
     </a>

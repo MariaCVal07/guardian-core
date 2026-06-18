@@ -1,14 +1,10 @@
-# pyrefly: ignore [missing-import]
 from fastapi import FastAPI
-# pyrefly: ignore [missing-import]
 from fastapi import Request
-# pyrefly: ignore [missing-import]
 from fastapi import Form
 
-# pyrefly: ignore [missing-import]
 from fastapi.responses import HTMLResponse
-# pyrefly: ignore [missing-import]
 from fastapi.templating import Jinja2Templates
+
 from backend.automation_engine import AutomationEngine
 
 from backend.agents.business_analyst.agent import (
@@ -18,6 +14,9 @@ from backend.agents.business_analyst.agent import (
 from backend.risk_engine import RiskEngine
 from backend.strategy_engine import StrategyEngine
 from backend.test_design_engine import TestDesignEngine
+
+from backend.pipeline import GuardianPipeline
+
 
 app = FastAPI()
 
@@ -33,7 +32,6 @@ def home(request: Request):
         request=request,
         name="index.html"
     )
-
 
 @app.post("/analyze", response_class=HTMLResponse)
 def analyze(
@@ -53,74 +51,32 @@ def analyze(
     acceptance_criteria: str = Form(...)
 ):
 
-    # ==================================
-    # BUSINESS ANALYSIS
-    # ==================================
+    pipeline = GuardianPipeline(
 
-    agent = BusinessAnalystAgent()
+        business_agent=BusinessAnalystAgent(),
 
-    analysis = agent.analyze_requirement(
+        risk_engine=RiskEngine(),
 
-        industry,
+        strategy_engine=StrategyEngine(),
 
-        product,
+        test_design_engine=TestDesignEngine(),
 
-        module,
-
-        business_description,
-
-        requirement,
-
-        acceptance_criteria
+        automation_engine=AutomationEngine()
     )
 
-    # ==================================
-    # RISK ENGINE
-    # ==================================
+    result = pipeline.analyze(
 
-    risk_engine = RiskEngine()
+        industry=industry,
 
-    risk_score = risk_engine.calculate_risk(
+        product=product,
 
-        industry,
+        module=module,
 
-        module,
+        business_description=business_description,
 
-        requirement
-    )
+        requirement=requirement,
 
-    # ==================================
-    # TEST STRATEGY
-    # ==================================
-
-    strategy_engine = StrategyEngine()
-
-    strategy = strategy_engine.determine_strategy(
-
-        analysis,
-
-        risk_score
-    )
-
-    # ==================================
-# TEST DESIGN
-# ==================================
-
-    design_engine = TestDesignEngine()
-
-    test_design = design_engine.generate_test_design(
-        analysis,
-        strategy
-    )
-
-    # ==================================
-    # AUTOMATION DECISION
-    # ==================================
-
-    automation_engine = AutomationEngine()
-
-    automation_decisions = automation_engine.evaluate(
-        test_design
+        acceptance_criteria=acceptance_criteria
     )
 
     return templates.TemplateResponse(
@@ -132,15 +88,27 @@ def analyze(
         context={
 
             "industry": industry,
+
             "product": product,
+
             "module": module,
+
             "business_description": business_description,
+
             "requirement": requirement,
+
             "acceptance_criteria": acceptance_criteria,
-            "analysis": analysis,
-            "risk_score": risk_score,
-            "strategy": strategy,
-            "test_design": test_design,
-            "automation_decisions": automation_decisions
+
+            "analysis": result["analysis"],
+
+            "risk_score": result["risk_score"],
+
+            "strategy": result["strategy"],
+
+            "test_design": result["test_design"],
+
+            "automation_decisions": result["automation_decisions"],
+
+            "risk_coverage": result["risk_coverage"]
         }
     )

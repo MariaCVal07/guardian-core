@@ -1,3 +1,6 @@
+from backend.risk_coverage_engine import RiskCoverageEngine
+
+
 class GuardianPipeline:
 
     def __init__(
@@ -24,6 +27,8 @@ class GuardianPipeline:
         self.test_design_engine = test_design_engine
 
         self.automation_engine = automation_engine
+
+        self.risk_coverage_engine = RiskCoverageEngine()
 
     def analyze(
 
@@ -57,7 +62,7 @@ class GuardianPipeline:
             acceptance_criteria
         )
 
-        risk_score = self.risk_engine.calculate_risk(
+        risk_result = self.risk_engine.calculate_risk(
 
             industry,
 
@@ -65,6 +70,29 @@ class GuardianPipeline:
 
             requirement
         )
+
+        risk_score = risk_result["score"]
+
+        detected_risks = risk_result["detected_risks"]
+
+        analysis_risks = analysis.get(
+
+            "potential_risks",
+
+            []
+        )
+
+        all_risks = list(
+
+            set(
+
+                analysis_risks +
+
+                detected_risks
+            )
+        )
+
+        analysis["potential_risks"] = all_risks
 
         strategy = self.strategy_engine.determine_strategy(
 
@@ -85,6 +113,13 @@ class GuardianPipeline:
             test_design
         )
 
+        risk_coverage = self.risk_coverage_engine.calculate(
+
+            all_risks,
+
+            test_design
+        )
+
         return {
 
             "analysis": analysis,
@@ -95,5 +130,8 @@ class GuardianPipeline:
 
             "test_design": test_design,
 
-            "automation_decisions": automation_decisions
+            "automation_decisions": automation_decisions,
+
+            "risk_coverage": risk_coverage
         }
+        
