@@ -1,19 +1,14 @@
 import json
-# pyrefly: ignore [missing-import]
 from openai import OpenAI
 from backend.config import CONFIG
-
 
 _client = None
 
 
 def get_client():
-    """Crea el cliente OpenAI una sola vez (lazy init)."""
-
     global _client
 
     if _client is None:
-
         _client = OpenAI(
             base_url=CONFIG["llm_base_url"],
             api_key=CONFIG["llm_api_key"]
@@ -23,16 +18,12 @@ def get_client():
 
 
 def llm_call(system_prompt, user_prompt, expect_json=False):
-    """Llama al LLM con manejo de errores.
+    """
+    Wrapper para llamadas al LLM.
 
-    Args:
-        system_prompt: Rol del sistema.
-        user_prompt: Prompt del usuario.
-        expect_json: Si True, parsea la respuesta como JSON.
-
-    Returns:
-        str o dict según expect_json.
-        None si hay error.
+    - Imprime la respuesta completa.
+    - Extrae automáticamente el JSON aunque el modelo
+      agregue texto o markdown.
     """
 
     client = get_client()
@@ -40,9 +31,7 @@ def llm_call(system_prompt, user_prompt, expect_json=False):
     try:
 
         response = client.chat.completions.create(
-
             model=CONFIG["llm_model"],
-
             messages=[
                 {
                     "role": "system",
@@ -53,7 +42,6 @@ def llm_call(system_prompt, user_prompt, expect_json=False):
                     "content": user_prompt
                 }
             ],
-
             temperature=CONFIG["llm_temperature"]
         )
 
@@ -63,25 +51,56 @@ def llm_call(system_prompt, user_prompt, expect_json=False):
 
         content = response.choices[0].message.content
 
-        if expect_json:
+        print("\n========== RAW LLM RESPONSE ==========")
+        print(content)
+        print("======================================\n")
 
-            content = content.strip()
+        if not expect_json:
+            return content
 
-            # Limpiar markdown wrapping si el LLM lo agrega
-            if content.startswith("```"):
-                content = content.split("\n", 1)[1]
-                content = content.rsplit("```", 1)[0]
+        # -----------------------------
+        # Limpieza automática
+        # -----------------------------
 
-            return json.loads(content)
+        content = content.strip()
 
-        return content
+        # Elimina ```json ... ```
+        if "```" in content:
+            content = (
+                content
+                .replace("```json", "")
+                .replace("```JSON", "")
+                .replace("```", "")
+                .strip()
+            )
+
+        # Busca el primer objeto JSON
+        start = content.find("{")
+        end = content.rfind("}")
+
+        if start == -1 or end == -1:
+            raise json.JSONDecodeError(
+                "No se encontró un objeto JSON.",
+                content,
+                0
+            )
+
+        json_text = content[start:end + 1]
+
+        return json.loads(json_text)
 
     except json.JSONDecodeError as e:
 
-        print(f"[GUARDIAN ERROR] LLM devolvió respuesta no-JSON: {e}")
+        print("\n========== JSON INVÁLIDO ==========")
+        print(content)
+        print("===================================\n")
+
+        print(f"[GUARDIAN ERROR] JSON inválido: {e}")
+
         return None
 
     except Exception as e:
 
         print(f"[GUARDIAN ERROR] Fallo en llamada LLM: {e}")
+
         return None

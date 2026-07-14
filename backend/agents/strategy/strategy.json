@@ -1,0 +1,27 @@
+{
+  "objective": "string",
+  "scope": [
+    "string"
+  ],
+  "execution_strategy": {
+    "smoke": "boolean",
+    "functional": "boolean",
+    "integration": "boolean",
+    "security": "boolean",
+    "regression": "boolean",
+    "api": "boolean",
+    "ui": "boolean",
+    "performance": "boolean"
+  },
+  "execution_order": [
+    "smoke | functional | integration | security | regression | api | ui | performance"
+  ],
+  "coverage_goal": "70% | 80% | 90% | 95% | 100%",
+  "justification": {
+    "strategy_name": {
+      "business_rule": "string",
+      "risk_covered": "string",
+      "reason": "string"
+    }
+  }
+}

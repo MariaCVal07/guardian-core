@@ -1,0 +1,10 @@
+{
+    "recommended_tests": [
+        {
+            "title": "string",
+            "description": "string",
+            "test_type": "functional | integration | security | regression | api | ui | smoke",
+            "priority": "low | medium | high | critical"
+        }
+    ]
+}

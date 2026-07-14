@@ -1,86 +1,58 @@
+from backend.llm_client import llm_call
+from backend.prompt_loader import load_prompt
+from backend.schema_loader import load_schema
+
+
 class RiskAnalystAgent:
+    """
+    Risk Analyst Agent.
+
+    Responsabilidad:
+    Analizar los riesgos identificados y proponer
+    recomendaciones de mitigación orientadas a QA.
+
+    Especificación funcional:
+
+        risk_analyst.md
+
+    Contrato de salida:
+
+        risk_analyst.json
+    """
 
     def analyze_risks(
         self,
         analysis
     ):
 
-        risks = analysis.get(
-            "potential_risks",
-            []
+        base_prompt = load_prompt(
+            "risk_analyst.md"
         )
 
-        mitigations = []
+        schema = load_schema(
+            "risk_analyst.json"
+        )
 
-        for risk in risks:
+        prompt = f"""
+{base_prompt}
 
-            mitigations.append({
+# ANÁLISIS FUNCIONAL
 
-                "risk": risk,
+{analysis}
 
-                "recommended_mitigation":
-                self.generate_mitigation(
-                    risk
-                )
-            })
+# FORMATO DE RESPUESTA
 
-        return mitigations
+{schema}
+"""
 
-    def generate_mitigation(
-        self,
-        risk
-    ):
+        response = llm_call(
+            system_prompt="Eres un QA Senior experto en Risk Based Testing.",
+            user_prompt=prompt,
+            expect_json=True
+        )
 
-        risk_lower = risk.lower()
+        print("\n===== RISK ANALYST OUTPUT =====")
+        print(response)
+        print("================================\n")
 
-        if "duplicad" in risk_lower:
-
-            return {
-                "title":
-                "Validar restricción de unicidad",
-                "test_type":
-                "functional"
-            }
-
-        if "saldo" in risk_lower:
-
-            return {
-                "title":
-                "Validar consistencia de saldo",
-                "test_type":
-                "functional"
-            }
-
-        if "transacción" in risk_lower:
-
-            return {
-                "title":
-                "Validar integridad de transferencia",
-                "test_type":
-                "integration"
-            }
-
-        if "financiero" in risk_lower:
-
-            return {
-                "title":
-                "Validar consistencia financiera",
-                "test_type":
-                "integration"
-            }
-
-        if "datos" in risk_lower:
-
-            return {
-                "title":
-                "Validar persistencia de datos",
-                "test_type":
-                "integration"
-            }
-
-        return {
-            "title":
-            f"Mitigar {risk}",
-            "test_type":
-            "functional"
-        }
+        return response

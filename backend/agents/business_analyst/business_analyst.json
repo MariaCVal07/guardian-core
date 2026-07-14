@@ -1,0 +1,32 @@
+{
+  "criticality": "low | medium | high | critical",
+  "business_impact": "string",
+  "business_objective": "string",
+  "affected_entities": [
+    "string"
+  ],
+  "affected_flows": [
+    "string"
+  ],
+  "business_rules": [
+    "string"
+  ],
+  "dependencies": [
+    "string"
+  ],
+  "assumptions": [
+    "string"
+  ],
+  "potential_risks": [
+    "string"
+  ],
+  "recommended_tests": [
+    {
+      "test_id": "string",
+      "title": "string",
+      "description": "string",
+      "test_type": "functional | integration | security | regression | ui | api | smoke",
+      "priority": "low | medium | high | critical"
+    }
+  ]
+}

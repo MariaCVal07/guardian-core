@@ -1,0 +1,10 @@
+{
+    "automation_decisions": [
+        {
+            "id": "string",
+            "title": "string",
+            "decision": "Automatizar | Manual | Parcial",
+            "reason": "string"
+        }
+    ]
+}

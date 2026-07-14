@@ -1,5 +1,6 @@
 from backend.llm_client import llm_call
-
+from backend.prompt_loader import load_prompt
+from backend.schema_loader import load_schema
 
 class BusinessAnalystAgent:
 
@@ -20,19 +21,20 @@ class BusinessAnalystAgent:
         acceptance_criteria
     ):
 
+        base_prompt = load_prompt(
+            __file__,
+            "business_analyst.md"
+        )
+
+        schema = load_schema(
+            __file__,
+            "business_analyst.json"
+        )  
+
         prompt = f"""
-        Eres un QA Senior especializado en:
+        {base_prompt}
 
-        - Testing basado en riesgo
-        - Risk Based Testing
-        - QA Strategy
-        - Business Analysis
-        - Software Quality Engineering
-        - Sistemas financieros
-        - Ecommerce
-        - Plataformas empresariales
-
-        CONTEXTO DEL NEGOCIO
+        # CONTEXTO DEL SDD
 
         Industria:
         {industry}
@@ -43,91 +45,46 @@ class BusinessAnalystAgent:
         Módulo:
         {module}
 
-        Descripción:
+        Descripción del negocio:
         {business_description}
 
-        REQUERIMIENTO FUNCIONAL
+        Utiliza esta información como contexto funcional del SDD.
+
+        Todas las decisiones deben basarse primero en este contexto.
+
+        # REQUERIMIENTO FUNCIONAL
 
         {requirement}
 
-        CRITERIOS DE ACEPTACIÓN
+        # CRITERIOS DE ACEPTACIÓN
 
         {acceptance_criteria}
 
-        Analiza el requerimiento considerando:
+        Analiza el requerimiento utilizando el contexto del SDD.
 
-        - Contexto del negocio
-        - Riesgo operativo
-        - Riesgo financiero
-        - Riesgo reputacional
-        - Seguridad
-        - Integraciones
-        - Experiencia de usuario
-        - Impacto en producción
+        Extrae únicamente información respaldada por:
 
-        Debes identificar:
+        - el SDD
+        - el requerimiento
+        - los criterios de aceptación
 
-        1. Nivel de criticidad
-        2. Impacto de negocio
-        3. Flujos afectados
-        4. Riesgos potenciales
-        5. Casos de prueba prioritarios
+        Si falta información, registra el supuesto en "assumptions".
 
-        RESPONDE EXCLUSIVAMENTE JSON.
+        No inventes comportamiento del sistema.
 
-        FORMATO OBLIGATORIO:
+        # FORMATO OBLIGATORIO DE RESPUESTA
 
-        {{
-            "criticality": "",
-            "business_impact": "",
-            "affected_flows": [],
-            "potential_risks": [],
-            "recommended_tests": []
-        }}
-
-        El campo criticality solo puede ser:
-
-        - low
-        - medium
-        - high
-        - critical
-
-        El campo recommended_tests debe tener:
-
-        [
-            {{
-                "test_id": "",
-                "title": "",
-                "description": "",
-                "test_type": "",
-                "priority": ""
-            }}
-        ]
-
-        test_type:
-
-        - functional
-        - integration
-        - security
-        - regression
-        - ui
-        - api
-        - smoke
-
-        priority:
-
-        - low
-        - medium
-        - high
-        - critical
-
-        No agregues markdown.
-        No agregues comentarios.
-        No agregues texto fuera del JSON.
+        {schema}
         """
-
-        return llm_call(
+                
+        response = llm_call(
             system_prompt="Eres un QA experto en Risk Based Testing.",
             user_prompt=prompt,
             expect_json=True
         )
+
+        print("\n===== BUSINESS ANALYST OUTPUT =====")
+        print(response)
+        print("===================================\n")
+
+        return response

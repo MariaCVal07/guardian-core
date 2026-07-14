@@ -1,94 +1,53 @@
+from backend.llm_client import llm_call
+from backend.prompt_loader import load_prompt
+from backend.schema_loader import load_schema
+
+
 class AutomationEngine:
+    """
+    Automation Engine.
 
-    def evaluate(self, test_design):
+    Responsabilidad:
+    Determinar la estrategia de automatización de cada
+    caso de prueba siguiendo la especificación SDD.
+    """
 
-        decisions = []
-
-        for test_case in test_design:
-
-            technique = test_case.get(
-                "design_technique",
-                ""
-            )
-
-            test_type = test_case.get(
-                "test_type",
-                ""
-            )
-
-            decision = self.decide(
-                technique,
-                test_type
-            )
-
-            decisions.append({
-
-                "id": test_case["id"],
-
-                "title": test_case["title"],
-
-                "decision": decision["decision"],
-
-                "reason": decision["reason"]
-            })
-
-        return decisions
-
-    def decide(
+    def evaluate(
         self,
-        technique,
-        test_type
+        test_design
     ):
 
-        if technique in [
+        base_prompt = load_prompt(
+            "automation.md"
+        )
 
-            "Boundary Value Analysis",
-            "Use Case Testing"
+        schema = load_schema(
+            "automation.json"
+        )
 
-        ]:
+        prompt = f"""
+        {base_prompt}
 
-            return {
+        # CASOS DE PRUEBA
 
-                "decision": "Automatizar",
+        {test_design}
 
-                "reason":
-                "Escenario estable y repetible."
-            }
+        # FORMATO DE RESPUESTA
 
-        if test_type == "integration":
+        {schema}
+        """
 
-            return {
+        response = llm_call(
+            system_prompt="Eres un QA Automation Architect.",
+            user_prompt=prompt,
+            expect_json=True
+        )
 
-                "decision": "Automatizar",
+        print("\n===== AUTOMATION ENGINE OUTPUT =====")
+        print(response)
+        print("====================================\n")
 
-                "reason":
-                "Validación frecuente entre sistemas."
-            }
+        if response is None:
+            return []
 
-        if test_type == "security":
-
-            return {
-
-                "decision": "Parcial",
-
-                "reason":
-                "Requiere herramientas especializadas."
-            }
-
-        if test_type == "ui":
-
-            return {
-
-                "decision": "Manual",
-
-                "reason":
-                "Alta variabilidad visual."
-            }
-
-        return {
-
-            "decision": "Manual",
-
-            "reason":
-            "No genera suficiente retorno automatizar."
-        }
+        return response.get("automation_decisions", [])

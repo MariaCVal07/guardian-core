@@ -1,127 +1,116 @@
+from backend.llm_client import llm_call
+from backend.prompt_loader import load_prompt
+from backend.schema_loader import load_schema
+
+
 class StrategyEngine:
+    """
+    Strategy Engine.
+
+    Responsabilidad:
+    Construir la estrategia de pruebas utilizando
+    la especificación funcional SDD.
+    """
 
     def determine_strategy(
 
         self,
 
+        industry,
+        product,
+        module,
+        business_description,
         analysis,
 
         risk_score
     ):
 
-        strategy = []
-
-        criticality = analysis.get(
-            "criticality",
-            ""
-        ).lower()
-
-        risks = analysis.get(
-            "potential_risks",
-            []
+        base_prompt = load_prompt(
+            "strategy.md"
         )
 
-        recommended_tests = analysis.get(
-            "recommended_tests",
-            []
+        schema = load_schema(
+            "strategy.json"
         )
 
-        # =====================================
-        # Siempre funcional
-        # =====================================
+        prompt = f"""
+        {base_prompt}
 
-        strategy.append(
-            "functional"
+        # CONTEXTO SDD
+
+        Industria:
+        {industry}
+
+        Producto:
+        {product}
+
+        Módulo:
+        {module}
+
+        Descripción del negocio:
+        {business_description}
+
+        # CONTEXTO DEL SDD
+
+        Industria:
+        {industry}
+
+        Producto:
+        {product}
+
+        Módulo:
+        {module}
+
+        Descripción del negocio:
+        {business_description}
+
+        # ANÁLISIS FUNCIONAL
+
+        Criticidad:
+        {analysis.get("criticality")}
+
+        Impacto:
+        {analysis.get("business_impact")}
+
+        Flujos afectados:
+        {analysis.get("affected_flows")}
+
+        Riesgos:
+        {analysis.get("potential_risks")}
+
+        Mitigaciones:
+        {analysis.get("risk_mitigations")}
+
+        # RISK SCORE
+
+        {risk_score}
+
+        # INSTRUCCIONES
+
+        Genera una estrategia de pruebas completa utilizando el contexto del SDD.
+
+        No generes casos de prueba.
+
+        No tomes decisiones de automatización.
+
+        Responde únicamente utilizando el contrato JSON.
+
+        # FORMATO DE RESPUESTA
+
+        {schema}
+        """
+
+        response = llm_call(
+
+            system_prompt="Eres un QA Test Architect experto en Risk Based Testing.",
+
+            user_prompt=prompt,
+
+            expect_json=True
         )
 
-        # =====================================
-        # Estrategia basada en riesgos
-        # =====================================
+        print("\n===== STRATEGY ENGINE OUTPUT =====")
+        print(response)
+        print("==================================\n")
 
-        for risk in risks:
-
-            risk_lower = risk.lower()
-
-            if (
-                "seguridad" in risk_lower
-                or "autorizado" in risk_lower
-                or "credencial" in risk_lower
-            ):
-
-                if "security" not in strategy:
-
-                    strategy.append(
-                        "security"
-                    )
-
-            if (
-                "integración" in risk_lower
-                or "externo" in risk_lower
-                or "pago" in risk_lower
-            ):
-
-                if "integration" not in strategy:
-
-                    strategy.append(
-                        "integration"
-                    )
-
-        # =====================================
-        # Estrategia basada en tests sugeridos
-        # =====================================
-
-        for test in recommended_tests:
-
-            test_type = test.get(
-                "test_type",
-                ""
-            )
-
-            if (
-                test_type == "integration"
-                and "integration" not in strategy
-            ):
-
-                strategy.append(
-                    "integration"
-                )
-
-            if (
-                test_type == "security"
-                and "security" not in strategy
-            ):
-
-                strategy.append(
-                    "security"
-                )
-
-        # =====================================
-        # Criticidad alta
-        # =====================================
-
-        if criticality in [
-
-            "high",
-
-            "critical"
-        ]:
-
-            if "regression" not in strategy:
-
-                strategy.append(
-                    "regression"
-                )
-
-        # =====================================
-        # Criticidad extrema
-        # =====================================
-
-        if criticality == "critical":
-
-            if "e2e" not in strategy:
-
-                strategy.append(
-                    "e2e"
-                )
-
-        return strategy
+        return response

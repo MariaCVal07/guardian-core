@@ -5,17 +5,16 @@ from fastapi import Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from backend.automation_engine import AutomationEngine
+from backend.pipeline import GuardianPipeline
 
-from backend.agents.business_analyst.agent import (
-    BusinessAnalystAgent
-)
+from backend.agents.business_analyst.agent import BusinessAnalystAgent
+from backend.agents.risk_analyst.agent import RiskAnalystAgent
+from backend.agents.test_designer.agent import TestDesignerAgent
 
 from backend.risk_engine import RiskEngine
 from backend.strategy_engine import StrategyEngine
 from backend.test_design_engine import TestDesignEngine
-
-from backend.pipeline import GuardianPipeline
+from backend.automation_engine import AutomationEngine
 
 
 app = FastAPI()
@@ -32,6 +31,7 @@ def home(request: Request):
         request=request,
         name="index.html"
     )
+
 
 @app.post("/analyze", response_class=HTMLResponse)
 def analyze(
@@ -50,6 +50,7 @@ def analyze(
 
     acceptance_criteria: str = Form(...)
 ):
+    print("ENTRÓ AL ENDPOINT /analyze")
 
     pipeline = GuardianPipeline(
 
@@ -57,11 +58,15 @@ def analyze(
 
         risk_engine=RiskEngine(),
 
+        risk_analyst=RiskAnalystAgent(),
+
         strategy_engine=StrategyEngine(),
 
         test_design_engine=TestDesignEngine(),
 
-        automation_engine=AutomationEngine()
+        automation_engine=AutomationEngine(),
+
+        test_designer=TestDesignerAgent()
     )
 
     result = pipeline.analyze(

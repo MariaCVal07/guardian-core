@@ -42,8 +42,8 @@
     <h2>Criticidad</h2>
     <p>{{ analysis.criticality }}</p>
 
-    <h2>Impacto de Negocio</h2>
-    <p>{{ analysis.business_impact }}</p>
+    <h2>Objetivo de Negocio</h2>
+    <p>{{ analysis.business_objective }}</p>
 
     <h2>Risk Score</h2>
 
@@ -60,7 +60,52 @@
         {% endfor %}
 
     </ul>
+    <h2>Entidades Afectadas</h2>
 
+    <ul>
+
+        {% for entity in analysis.affected_entities %}
+
+            <li>{{ entity }}</li>
+
+        {% endfor %}
+
+    </ul>
+    <h2>Reglas de Negocio</h2>
+
+    <ul>
+
+        {% for rule in analysis.business_rules %}
+
+            <li>{{ rule }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+    <h2>Dependencias</h2>
+
+    <ul>
+
+        {% for dependency in analysis.dependencies %}
+
+            <li>{{ dependency }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+    <h2>Supuestos</h2>
+
+    <ul>
+
+        {% for assumption in analysis.assumptions %}
+
+            <li>{{ assumption }}</li>
+
+        {% endfor %}
+
+    </ul>
     <h2>Riesgos Potenciales</h2>
 
     <ul>
@@ -72,22 +117,137 @@
         {% endfor %}
 
     </ul>
+    <h2>Mitigaciones Recomendadas</h2>
+
+    <table border="1" cellpadding="6">
+
+        <tr>
+            <th>Riesgo</th>
+            <th>Categoría</th>
+            <th>Regla de Negocio</th>
+            <th>Mitigación</th>
+            <th>Tipo de Prueba</th>
+            <th>Justificación</th>
+        </tr>
+
+        {% for item in analysis.risk_mitigations.mitigations %}
+
+        <tr>
+
+            <td>{{ item.risk }}</td>
+
+            <td>{{ item.risk_category }}</td>
+
+            <td>{{ item.business_rule }}</td>
+
+            <td>{{ item.recommended_mitigation.title }}</td>
+
+            <td>{{ item.recommended_mitigation.test_type|capitalize }}</td>
+
+            <td>{{ item.recommended_mitigation.justification }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
 
     <hr>
 
     <h1>TEST STRATEGY</h1>
 
-    <ul>
+        <h2>Objetivo</h2>
+        <p>{{ strategy.objective }}</p>
 
-        {% for item in strategy %}
+        <h2>Alcance</h2>
 
-            <li>{{ item }}</li>
+        <ul>
+
+            {% for item in strategy.scope %}
+
+                <li>{{ item }}</li>
+
+            {% endfor %}
+
+        </ul>
+
+        <h2>Estrategias Seleccionadas</h2>
+
+        <table border="1" cellpadding="6">
+
+            <tr>
+                <th>Estrategia</th>
+                <th>Estado</th>
+            </tr>
+
+            {% for key, value in strategy.execution_strategy.items() %}
+
+                {% if value %}
+
+                <tr>
+
+                    <td>{{ key|capitalize }}</td>
+
+                    <td>Seleccionada</td>
+
+                </tr>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </table>
+
+        <h2>Orden de Ejecución</h2>
+
+        <ol>
+
+            {% for item in strategy.execution_order %}
+
+                <li>{{ item|capitalize }}</li>
+
+            {% endfor %}
+
+        </ol>
+
+        <h2>Cobertura Objetivo</h2>
+
+        <p>{{ strategy.coverage_goal }}</p>
+
+        <h2>Justificación de la Estrategia</h2>
+
+        <table border="1" cellpadding="6">
+
+        <tr>
+
+            <th>Estrategia</th>
+
+            <th>Regla de Negocio</th>
+
+            <th>Riesgo Cubierto</th>
+
+            <th>Justificación</th>
+
+        </tr>
+
+        {% for strategy_name, info in strategy.justification.items() %}
+
+        <tr>
+
+            <td>{{ strategy_name|capitalize }}</td>
+
+            <td>{{ info.business_rule }}</td>
+
+            <td>{{ info.risk_covered }}</td>
+
+            <td>{{ info.reason }}</td>
+
+        </tr>
 
         {% endfor %}
 
-    </ul>
-
-    <hr>
+        </table>
+            <hr>
 
     <h1>TEST DESIGN</h1>
 

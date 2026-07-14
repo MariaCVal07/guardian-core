@@ -1,0 +1,14 @@
+{
+  "mitigations": [
+    {
+      "risk": "string",
+      "risk_category": "data | integrity | security | fraud | integration | business | availability | performance | compliance",
+      "business_rule": "string",
+      "recommended_mitigation": {
+        "title": "string",
+        "justification": "string",
+        "test_type": "functional | integration | security | regression | performance | api | ui"
+      }
+    }
+  ]
+}
