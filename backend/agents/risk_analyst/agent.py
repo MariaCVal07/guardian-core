@@ -34,16 +34,16 @@ class RiskAnalystAgent:
         )
 
         prompt = f"""
-{base_prompt}
+        {base_prompt}
 
-# ANÁLISIS FUNCIONAL
+        # ANÁLISIS FUNCIONAL
 
-{analysis}
+        {analysis}
 
-# FORMATO DE RESPUESTA
+        # FORMATO DE RESPUESTA
 
-{schema}
-"""
+        {schema}
+        """
 
         response = llm_call(
             system_prompt="Eres un QA Senior experto en Risk Based Testing.",

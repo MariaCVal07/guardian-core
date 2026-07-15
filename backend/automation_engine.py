@@ -14,6 +14,8 @@ class AutomationEngine:
 
     def evaluate(
         self,
+        analysis,
+        strategy,
         test_design
     ):
 
@@ -27,14 +29,23 @@ class AutomationEngine:
 
         prompt = f"""
         {base_prompt}
+        
+        # ANÁLISIS FUNCIONAL
+
+        {analysis}
+
+        # ESTRATEGIA DE PRUEBAS
+
+        {strategy}
 
         # CASOS DE PRUEBA
 
         {test_design}
 
-        # FORMATO DE RESPUESTA
+        # RESPONDE ÚNICAMENTE EN JSON
 
         {schema}
+
         """
 
         response = llm_call(

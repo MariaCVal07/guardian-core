@@ -1,6 +1,7 @@
 import json
 from openai import OpenAI
 from backend.config import CONFIG
+import traceback
 
 _client = None
 
@@ -101,6 +102,8 @@ def llm_call(system_prompt, user_prompt, expect_json=False):
 
     except Exception as e:
 
-        print(f"[GUARDIAN ERROR] Fallo en llamada LLM: {e}")
+        print("\n========== LLM EXCEPTION ==========")
+        traceback.print_exc()
+        print("===================================\n")
 
         return None

@@ -42,18 +42,23 @@ class TestDesignEngine:
 
         for recommendation in analysis["recommended_tests"]:
 
-            title = recommendation["title"]
+            title = recommendation.get("title")
 
-            description = recommendation["description"]
+            objective = recommendation.get("objective")
 
-            test_type = recommendation["test_type"]
+            description = recommendation.get("description")
 
-            priority = recommendation["priority"]
+            business_rule = recommendation.get("business_rule")
 
-            scenario_type = self.classifier.detect_scenario_type(
-                title,
-                description
-            )
+            risk_covered = recommendation.get("risk_covered")
+
+            scenario = recommendation.get("scenario")
+
+            test_type = recommendation.get("test_type")
+
+            priority = recommendation.get("priority")
+
+            scenario_type = scenario
 
             design_technique = self.classifier.select_design_technique(
                 scenario_type,
@@ -65,11 +70,15 @@ class TestDesignEngine:
                 priority
             )
 
-            covered_risks = self.risk_mapper.map_risks_to_test(
-                title,
-                description,
-                risks
-            )
+            covered_risks = [risk_covered] if risk_covered else []
+
+            if not risk_covered:
+
+                covered_risks = self.risk_mapper.map_risks_to_test(
+                    title,
+                    description,
+                    risks
+                )
 
             tests.append({
 
@@ -92,6 +101,12 @@ class TestDesignEngine:
                 "automatable": self.is_automatable(
                     test_type
                 ),
+
+                "objective": objective,
+
+                "business_rule": business_rule,
+
+                "risk_covered": risk_covered,
 
                 "covers_risks": covered_risks
             })

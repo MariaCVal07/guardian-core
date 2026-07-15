@@ -1,10 +1,23 @@
 {
-    "recommended_tests": [
-        {
-            "title": "string",
-            "description": "string",
-            "test_type": "functional | integration | security | regression | api | ui | smoke",
-            "priority": "low | medium | high | critical"
-        }
-    ]
+  "tests": [
+    {
+      "id": "TC-001",
+
+      "title": "string",
+
+      "objective": "string",
+
+      "description": "string",
+
+      "business_rule": "string",
+
+      "risk_covered": "string",
+
+      "scenario": "happy_path | negative | edge_case | security | integration",
+
+      "test_type": "functional | integration | security | regression | api | ui | smoke",
+
+      "priority": "low | medium | high | critical"
+    }
+  ]
 }

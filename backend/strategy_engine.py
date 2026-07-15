@@ -15,14 +15,11 @@ class StrategyEngine:
     def determine_strategy(
 
         self,
-
         industry,
         product,
         module,
         business_description,
         analysis,
-
-        risk_score
     ):
 
         base_prompt = load_prompt(
@@ -80,10 +77,6 @@ class StrategyEngine:
 
         Mitigaciones:
         {analysis.get("risk_mitigations")}
-
-        # RISK SCORE
-
-        {risk_score}
 
         # INSTRUCCIONES
 

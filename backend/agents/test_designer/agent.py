@@ -7,11 +7,9 @@ class TestDesignerAgent:
 
     def generate_tests(
         self,
-        industry,
-        module,
+        analysis,
         requirement,
-        acceptance_criteria,
-        risks
+        acceptance_criteria
     ):
 
         base_prompt = load_prompt(
@@ -27,11 +25,9 @@ class TestDesignerAgent:
 
         # CONTEXTO
 
-        Industria:
-        {industry}
+        # ANÁLISIS FUNCIONAL
 
-        Módulo:
-        {module}
+        {analysis}
 
         # REQUERIMIENTO
 
@@ -40,15 +36,7 @@ class TestDesignerAgent:
         # CRITERIOS DE ACEPTACIÓN
 
         {acceptance_criteria}
-
-        # RIESGOS IDENTIFICADOS
-
-        {risks}
-
-        # RIESGOS IDENTIFICADOS
-
-        {risks}
-
+        
         # RESPONDE ÚNICAMENTE EN JSON
 
         NO escribas explicaciones.
@@ -77,4 +65,4 @@ class TestDesignerAgent:
         print(response)
         print("================================\n")
 
-        return response.get("recommended_tests", [])
+        return response.get("tests", [])

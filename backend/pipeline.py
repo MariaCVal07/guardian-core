@@ -6,7 +6,6 @@ class GuardianPipeline:
     def __init__(
         self,
         business_agent,
-        risk_engine,
         risk_analyst,
         strategy_engine,
         test_design_engine,
@@ -15,7 +14,10 @@ class GuardianPipeline:
     ):
 
         self.business_agent = business_agent
-        self.risk_engine = risk_engine
+
+        # Se mantiene por compatibilidad.
+        # Ya no se utiliza en el MVP.
+
         self.risk_analyst = risk_analyst
         self.strategy_engine = strategy_engine
         self.test_designer = test_designer
@@ -33,6 +35,10 @@ class GuardianPipeline:
         acceptance_criteria
     ):
 
+        # ==========================
+        # BUSINESS ANALYSIS
+        # ==========================
+
         analysis = self.business_agent.analyze_requirement(
             industry,
             product,
@@ -42,71 +48,74 @@ class GuardianPipeline:
             acceptance_criteria
         )
 
-        risk_result = self.risk_engine.calculate_risk(
-            industry,
-            module,
-            requirement
-        )
+        # ==========================
+        # RISK ANALYSIS
+        # ==========================
 
-        risk_score = risk_result["score"]
-        detected_risks = risk_result["detected_risks"]
-
-        analysis_risks = analysis.get(
-            "potential_risks",
-            []
-        )
-
-        all_risks = list(
-            set(
-                analysis_risks +
-                detected_risks
+        analysis["risk_mitigations"] = (
+            self.risk_analyst.analyze_risks(
+                analysis
             )
         )
 
-        analysis["potential_risks"] = all_risks
+        # ==========================
+        # TEST STRATEGY
+        # ==========================
 
-        analysis["risk_mitigations"] = self.risk_analyst.analyze_risks(
-            analysis
-        )
-
-        # Estrategia de pruebas
         strategy = self.strategy_engine.determine_strategy(
             industry=industry,
             product=product,
             module=module,
             business_description=business_description,
-            analysis=analysis,
-            risk_score=risk_score
+            analysis=analysis
         )
 
-        # Casos recomendados
+        # ==========================
+        # TEST IDENTIFICATION
+        # ==========================
+
         analysis["recommended_tests"] = self.test_designer.generate_tests(
-            industry=industry,
-            module=module,
+            analysis=analysis,
             requirement=requirement,
-            acceptance_criteria=acceptance_criteria,
-            risks=all_risks
+            acceptance_criteria=acceptance_criteria
         )
 
-        # Diseño de pruebas
-        test_design = self.test_design_engine.generate_test_design(
-            analysis
+        # ==========================
+        # TEST DESIGN
+        # ==========================
+
+        test_design = (
+            self.test_design_engine.generate_test_design(
+                analysis
+            )
         )
 
-        # Automatización
-        automation_decisions = self.automation_engine.evaluate(
+        # ==========================
+        # AUTOMATION
+        # ==========================
+
+        automation_decisions = self.automation_engine.evaluate (
+            analysis,
+            strategy,
             test_design
         )
 
-        # Cobertura de riesgos
-        risk_coverage = self.risk_coverage_engine.calculate(
-            all_risks,
-            test_design
+        # ==========================
+        # RISK COVERAGE
+        # ==========================
+
+        risk_coverage = (
+            self.risk_coverage_engine.calculate(
+                analysis.get(
+                    "potential_risks",
+                    []
+                ),
+                test_design
+            )
         )
 
         return {
             "analysis": analysis,
-            "risk_score": risk_score,
             "strategy": strategy,
             "test_design": test_design,
             "automation_decisions": automation_decisions,

@@ -81,6 +81,23 @@ Antes de generar los casos identifica mentalmente:
 
 ---
 
+# PRIORIZACIÓN
+
+Antes de diseñar los casos identifica cuáles validaciones tienen mayor impacto sobre:
+
+- reglas críticas del negocio
+- riesgos identificados
+- integridad de datos
+- seguridad
+- procesos financieros
+- cumplimiento funcional
+
+Las validaciones críticas deben convertirse en casos de prioridad high o critical.
+
+No todas las validaciones deben tener la misma prioridad.
+
+---
+
 # TIPOS DE PRUEBA
 
 Solo puedes generar:
@@ -93,6 +110,11 @@ Solo puedes generar:
 - ui
 - smoke
 
+Cada caso debe seleccionar exactamente un tipo de prueba.
+
+Selecciona el tipo que mejor represente el objetivo principal del caso.
+
+No combinar múltiples tipos en un mismo caso.
 ---
 
 # PRIORIDADES
@@ -103,7 +125,11 @@ Solo:
 - medium
 - high
 - critical
+La prioridad debe depender del impacto funcional.
 
+No utilizar high por defecto.
+
+Utilizar critical únicamente cuando el fallo comprometa procesos esenciales del negocio.
 ---
 
 # REGLAS
@@ -131,44 +157,90 @@ No generar automatización.
 No generar cobertura.
 
 No generar texto fuera del JSON.
+Cada caso debe ser completamente independiente.
+
+Cada caso debe poder ejecutarse de forma aislada.
+
+Evitar dependencias entre casos.
+
+Evitar validar más de una regla de negocio en un mismo caso.
+
+Si una regla genera varios escenarios, crear casos separados.
+
+No repetir validaciones con diferente redacción.
+
+Cada caso debe estar asociado exactamente a una regla de negocio.
+
+Cada caso debe indicar explícitamente el riesgo principal que ayuda a mitigar.
+
+Cada caso debe clasificarse según el tipo de escenario.
+
+No dejar campos vacíos.
 
 ---
 
 # CALIDAD ESPERADA
 
-Una buena suite debe cubrir:
+Diseña únicamente casos que puedan justificarse mediante:
 
-- escenarios felices
-
-- escenarios negativos
-
+- requerimiento funcional
+- criterios de aceptación
 - reglas de negocio
+- riesgos identificados
+- escenarios derivados directamente del análisis
 
-- validaciones
+No inventes funcionalidades inexistentes.
 
-- restricciones
+---
 
-- riesgos
+# TRAZABILIDAD
 
-- integraciones
+Cada caso debe poder relacionarse con:
 
-- seguridad
+- una regla de negocio
+- un riesgo identificado
 
-- consistencia
+Nunca generes un caso sin poder justificarlo.
 
-- integridad de datos
+---
+# COBERTURA MÍNIMA ESPERADA
 
-No omitas escenarios importantes aunque no aparezcan explícitamente en el requerimiento si se derivan directamente de las reglas de negocio.
+Si aplica al requerimiento, la suite debe incluir casos para:
 
+- Happy Path
+- Escenarios negativos
+- Reglas de negocio
+- Restricciones
+- Validaciones
+- Datos inválidos
+- Datos duplicados
+- Datos faltantes
+- Límites
+- Integridad de datos
+- Persistencia
+- Integraciones
+- Seguridad
+- Auditoría
+
+No inventar escenarios que no puedan derivarse del requerimiento o de las reglas de negocio.
 ---
 
 # OUTPUT
 
-Para cada caso genera:
+Para cada caso genera
 
-- title
-- description
-- test_type
-- priority
+-id
+-title
+-objective
+-description
+-business_rule
+-risk_covered
+-scenario
+-test_type
+-priority
 
-Responder únicamente JSON.
+Cada caso debe representar una única validación claramente identificable.
+
+Los títulos deben ser específicos.
+
+Las descripciones deben indicar exactamente qué comportamiento debe verificarse.

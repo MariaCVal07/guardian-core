@@ -37,7 +37,7 @@
 
     <hr>
 
-    <h1>ANÁLISIS DE RIESGO</h1>
+    <h1>ANÁLISIS FUNCIONAL Y DE RIESGO</h1>
 
     <h2>Criticidad</h2>
     <p>{{ analysis.criticality }}</p>
@@ -45,11 +45,16 @@
     <h2>Objetivo de Negocio</h2>
     <p>{{ analysis.business_objective }}</p>
 
-    <h2>Risk Score</h2>
+    <h2>Resumen del Riesgo</h2>
 
-    <h1>{{ risk_score }}/100</h1>
+    <p>
+    La criticidad del requerimiento fue evaluada como
+    <b>{{ analysis.criticality|capitalize }}</b>
+    con base en el impacto funcional, reglas de negocio,
+    entidades involucradas y riesgos identificados.
+    </p>
 
-    <h2>Flujos Afectados</h2>
+    <h2>Flujos Impactados</h2>
 
     <ul>
 
@@ -60,7 +65,7 @@
         {% endfor %}
 
     </ul>
-    <h2>Entidades Afectadas</h2>
+    <h2>Entidades Funcionales</h2>
 
     <ul>
 
@@ -71,7 +76,7 @@
         {% endfor %}
 
     </ul>
-    <h2>Reglas de Negocio</h2>
+    <h2>Reglas Funcionales</h2>
 
     <ul>
 
@@ -117,17 +122,15 @@
         {% endfor %}
 
     </ul>
-    <h2>Mitigaciones Recomendadas</h2>
+    <h2>Mitigaciones QA Recomendadas</h2>
 
     <table border="1" cellpadding="6">
 
         <tr>
             <th>Riesgo</th>
             <th>Categoría</th>
-            <th>Regla de Negocio</th>
-            <th>Mitigación</th>
+            <th>Mitigación QA</th>
             <th>Tipo de Prueba</th>
-            <th>Justificación</th>
         </tr>
 
         {% for item in analysis.risk_mitigations.mitigations %}
@@ -136,15 +139,11 @@
 
             <td>{{ item.risk }}</td>
 
-            <td>{{ item.risk_category }}</td>
-
-            <td>{{ item.business_rule }}</td>
+            <td>{{ item.risk_category|capitalize }}</td>
 
             <td>{{ item.recommended_mitigation.title }}</td>
 
             <td>{{ item.recommended_mitigation.test_type|capitalize }}</td>
-
-            <td>{{ item.recommended_mitigation.justification }}</td>
 
         </tr>
 

@@ -11,7 +11,6 @@ from backend.agents.business_analyst.agent import BusinessAnalystAgent
 from backend.agents.risk_analyst.agent import RiskAnalystAgent
 from backend.agents.test_designer.agent import TestDesignerAgent
 
-from backend.risk_engine import RiskEngine
 from backend.strategy_engine import StrategyEngine
 from backend.test_design_engine import TestDesignEngine
 from backend.automation_engine import AutomationEngine
@@ -56,8 +55,6 @@ def analyze(
 
         business_agent=BusinessAnalystAgent(),
 
-        risk_engine=RiskEngine(),
-
         risk_analyst=RiskAnalystAgent(),
 
         strategy_engine=StrategyEngine(),
@@ -93,20 +90,13 @@ def analyze(
         context={
 
             "industry": industry,
-
             "product": product,
-
             "module": module,
-
             "business_description": business_description,
-
             "requirement": requirement,
-
             "acceptance_criteria": acceptance_criteria,
 
             "analysis": result["analysis"],
-
-            "risk_score": result["risk_score"],
 
             "strategy": result["strategy"],
 

@@ -1,10 +1,12 @@
 {
-    "automation_decisions": [
-        {
-            "id": "string",
-            "title": "string",
-            "decision": "Automatizar | Manual | Parcial",
-            "reason": "string"
-        }
-    ]
+  "automation_decisions": [
+    {
+      "id": "string",
+      "title": "string",
+      "decision": "Automatizar | Manual | Parcial",
+      "reason": "string",
+      "business_rule": "string",
+      "risk_covered": "string"
+    }
+  ]
 }
