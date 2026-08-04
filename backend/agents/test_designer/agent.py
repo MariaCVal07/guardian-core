@@ -1,6 +1,5 @@
 from backend.llm_client import llm_call
-from backend.prompt_loader import load_prompt
-from backend.schema_loader import load_schema
+from backend.core.loaders import load_prompt, load_schema
 
 
 class TestDesignerAgent:
