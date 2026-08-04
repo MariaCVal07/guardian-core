@@ -1,4 +1,4 @@
-from backend.llm_client import llm_call
+from backend.core.llm_client import llm_call
 from backend.core.loaders import load_prompt, load_schema
 
 class BusinessAnalystAgent:
@@ -20,15 +20,12 @@ class BusinessAnalystAgent:
         acceptance_criteria
     ):
 
-        base_prompt = load_prompt(
-            __file__,
-            "business_analyst.md"
-        )
+        base_prompt = load_prompt("business_analyst.md")
 
-        schema = load_schema(
-            __file__,
-            "business_analyst.json"
-        )  
+        schema = load_schema("business_analyst.json")  
+
+        print(base_prompt[:500])
+        print(schema)
 
         prompt = f"""
         {base_prompt}
@@ -77,7 +74,22 @@ class BusinessAnalystAgent:
         """
                 
         response = llm_call(
-            system_prompt="Eres un QA experto en Risk Based Testing.",
+            system_prompt="""
+                Eres un Senior Business Analyst y Domain Modeling Expert.
+
+                Tu única responsabilidad es construir un modelo funcional del dominio.
+
+                Nunca diseñes pruebas.
+
+                Nunca identifiques riesgos.
+
+                Nunca propongas estrategias.
+
+                Nunca inventes comportamiento.
+
+                Extrae únicamente información respaldada por el contexto.
+                """,
+                
             user_prompt=prompt,
             expect_json=True
         )
@@ -85,5 +97,5 @@ class BusinessAnalystAgent:
         print("\n===== BUSINESS ANALYST OUTPUT =====")
         print(response)
         print("===================================\n")
-
+        
         return response

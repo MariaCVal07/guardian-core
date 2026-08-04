@@ -1,32 +1,74 @@
 {
-  "criticality": "low | medium | high | critical",
+  "business_goal": "string",
   "business_impact": "string",
-  "business_objective": "string",
-  "affected_entities": [
+  "criticality": "low | medium | high | critical",
+
+  "actors": [
     "string"
   ],
-  "affected_flows": [
+
+  "entities": [
     "string"
   ],
-  "business_rules": [
-    "string"
-  ],
-  "dependencies": [
-    "string"
-  ],
-  "assumptions": [
-    "string"
-  ],
-  "potential_risks": [
-    "string"
-  ],
-  "recommended_tests": [
+
+  "relationships": [
     {
-      "test_id": "string",
-      "title": "string",
+      "source": "string",
+      "relationship": "string",
+      "target": "string"
+    }
+  ],
+
+  "business_rules": [
+    {
+      "rule": "String",
+      "evidence": "String"
+    }
+  ],
+
+  "constraints": [
+    "string"
+  ],
+
+  "preconditions": [
+    "string"
+  ],
+
+  "postconditions": [
+    "string"
+  ],
+
+  "valid_states": [
+    "string"
+  ],
+
+  "invalid_states": [
+    "string"
+  ],
+
+  "functional_flow": [
+    "string"
+  ],
+
+  "ambiguities": [
+    {
+    "description": "string",
+    "reason": "No está especificado en el requerimiento"
+    }
+  ],
+
+  "missing_information": [
+    "string"
+  ],
+
+  "invariants": [
+    "string"
+  ],
+
+  "assumptions": [
+    {
       "description": "string",
-      "test_type": "functional | integration | security | regression | ui | api | smoke",
-      "priority": "low | medium | high | critical"
+      "reason": "string"
     }
   ]
 }
