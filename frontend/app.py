@@ -27,8 +27,8 @@ templates = Jinja2Templates(
 def home(request: Request):
 
     return templates.TemplateResponse(
-        request=request,
-        name="index.html"
+        name="index.html",
+        context={"request": request}
     )
 
 
@@ -83,11 +83,11 @@ def analyze(
 
     return templates.TemplateResponse(
 
-        request=request,
-
         name="result.html",
 
         context={
+
+            "request": request,
 
             "industry": industry,
             "product": product,
