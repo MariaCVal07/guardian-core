@@ -1,30 +1,27 @@
 class RiskCoverageEngine:
 
     def calculate(
-
         self,
-
         risks,
-
         test_design
     ):
 
-        all_risks = set(risks)
+        all_risks = {
+            risk["title"]
+            for risk in risks
+        }
+
         covered_risks = set()
 
         for test_case in test_design:
 
             for risk in test_case.get(
-
                 "covers_risks",
-
                 []
             ):
 
                 if risk in all_risks:
                     covered_risks.add(risk)
-
-        all_risks = set(risks)
 
         uncovered_risks = all_risks - covered_risks
 
@@ -34,9 +31,8 @@ class RiskCoverageEngine:
 
         else:
 
-            coverage_percent = min(
-                100,
-                int((len(covered_risks) / len(all_risks)) * 100)
+            coverage_percent = int(
+                (len(covered_risks) / len(all_risks)) * 100
             )
 
         return {
@@ -49,4 +45,3 @@ class RiskCoverageEngine:
 
             "coverage_percent": coverage_percent
         }
-        

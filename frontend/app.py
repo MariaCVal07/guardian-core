@@ -9,11 +9,12 @@ from backend.pipeline import GuardianPipeline
 
 from backend.agents.business_analyst.agent import BusinessAnalystAgent
 from backend.agents.risk_analyst.agent import RiskAnalystAgent
+from backend.engines.risk_coverage_engine import RiskCoverageEngine
 from backend.agents.test_designer.agent import TestDesignerAgent
 
-from backend.strategy_engine import StrategyEngine
-from backend.test_design_engine import TestDesignEngine
-from backend.automation_engine import AutomationEngine
+from backend.agents.strategy.strategy_engine import StrategyEngine
+from backend.engines.test_design_engine import TestDesignEngine
+from backend.agents.automation.automation_engine import AutomationEngine
 
 
 app = FastAPI()
@@ -96,7 +97,9 @@ def analyze(
             "requirement": requirement,
             "acceptance_criteria": acceptance_criteria,
 
-            "analysis": result["analysis"],
+            "business_analysis": result["business_analysis"],
+            
+            "risk_analysis": result["risk_analysis"],
 
             "strategy": result["strategy"],
 

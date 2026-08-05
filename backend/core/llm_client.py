@@ -1,7 +1,8 @@
 import json
 from openai import OpenAI
-from backend.config import CONFIG
+from backend.core.config import CONFIG
 import traceback
+import ast
 
 _client = None
 
@@ -52,10 +53,6 @@ def llm_call(system_prompt, user_prompt, expect_json=False):
 
         content = response.choices[0].message.content
 
-        print("\n========== RAW LLM RESPONSE ==========")
-        print(content)
-        print("======================================\n")
-
         if not expect_json:
             return content
 
@@ -88,7 +85,21 @@ def llm_call(system_prompt, user_prompt, expect_json=False):
 
         json_text = content[start:end + 1]
 
-        return json.loads(json_text)
+        # Intentar primero como JSON válido
+        try:
+            return json.loads(json_text)
+        except json.JSONDecodeError:
+            pass
+
+        # Si el modelo devolvió un dict de Python (' en vez de ")
+        try:
+            return ast.literal_eval(json_text)
+        except Exception:
+            raise json.JSONDecodeError(
+                "La respuesta no es un JSON válido.",
+                json_text,
+                0
+            )
 
     except json.JSONDecodeError as e:
 

@@ -1,4 +1,4 @@
-from backend.llm_client import llm_call
+from backend.core.llm_client import llm_call
 from backend.core.loaders import load_prompt, load_schema
 
 

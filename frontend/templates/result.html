@@ -1,399 +1,235 @@
-<!DOCTYPE html>
-<html>
+<title>Guardian Analysis</title>
 
-<head>
+<h1>GUARDIÁN QA</h1>
 
-    <title>Guardian Analysis</title>
+<hr>
 
-</head>
+<h2>Industria</h2>
+<p>{{ industry }}</p>
 
-<body>
+<h2>Producto</h2>
+<p>{{ product }}</p>
 
-    <h1>GUARDIÁN QA</h1>
+<h2>Módulo</h2>
+<p>{{ module }}</p>
 
-    <hr>
+<h2>Descripción del Negocio</h2>
+<pre>{{ business_description }}</pre>
 
-    <h2>Industria</h2>
-    <p>{{ industry }}</p>
+<hr>
 
-    <h2>Producto</h2>
-    <p>{{ product }}</p>
+<h2>Requerimiento Funcional</h2>
+<pre>{{ requirement }}</pre>
 
-    <h2>Módulo</h2>
-    <p>{{ module }}</p>
+<hr>
 
-    <h2>Descripción del Negocio</h2>
-    <pre>{{ business_description }}</pre>
+<h2>Criterios de Aceptación</h2>
+<pre>{{ acceptance_criteria }}</pre>
 
-    <hr>
+<hr>
 
-    <h2>Requerimiento Funcional</h2>
-    <pre>{{ requirement }}</pre>
+<h1>BUSINESS MODEL</h1>
 
-    <hr>
+<h2>Objetivo del Negocio</h2>
+<p>{{ business_analysis.business_goal }}</p>
 
-    <h2>Criterios de Aceptación</h2>
-    <pre>{{ acceptance_criteria }}</pre>
+<h2>Impacto del Negocio</h2>
+<p>{{ business_analysis.business_impact }}</p>
 
-    <hr>
+<h2>Criticidad</h2>
+<p>{{ business_analysis.criticality }}</p>
 
-    <h1>ANÁLISIS FUNCIONAL Y DE RIESGO</h1>
+<h2>Actores</h2>
 
-    <h2>Criticidad</h2>
-    <p>{{ analysis.criticality }}</p>
+<ul>
+    {% for actor in business_analysis.actors %}
+        <li>{{ actor }}</li>
+    {% endfor %}
+</ul>
 
-    <h2>Objetivo de Negocio</h2>
-    <p>{{ analysis.business_objective }}</p>
+<h2>Entidades</h2>
 
-    <h2>Resumen del Riesgo</h2>
+<ul>
+    {% for entity in business_analysis.entities %}
+        <li>{{ entity }}</li>
+    {% endfor %}
+</ul>
 
-    <p>
-    La criticidad del requerimiento fue evaluada como
-    <b>{{ analysis.criticality|capitalize }}</b>
-    con base en el impacto funcional, reglas de negocio,
-    entidades involucradas y riesgos identificados.
-    </p>
+<h2>Reglas de Negocio</h2>
 
-    <h2>Flujos Impactados</h2>
+<ul>
+    {% for rule in business_analysis.business_rules %}
+        <li>
+            {{ rule.rule }}
+            ({{ rule.evidence }})
+        </li>
+    {% endfor %}
+</ul>
 
-    <ul>
+<hr>
 
-        {% for flow in analysis.affected_flows %}
+<h1>RISK MODEL</h1>
 
-            <li>{{ flow }}</li>
+<table border="1" cellpadding="6">
 
-        {% endfor %}
+    <tr>
+        <th>Riesgo</th>
+        <th>Categoría</th>
+        <th>Regla</th>
+        <th>Mitigación</th>
+        <th>Tipo de prueba</th>
+    </tr>
 
-    </ul>
-    <h2>Entidades Funcionales</h2>
+    {% for risk in risk_analysis.identified_risks %}
+    <tr>
+        <td>{{ risk.title }}</td>
+        <td>{{ risk.category }}</td>
+        <td>{{ risk.related_rule }}</td>
+        <td>{{ risk.recommended_mitigation.description }}</td>
+        <td>{{ risk.recommended_mitigation.test_type }}</td>
+    </tr>
+    {% endfor %}
 
-    <ul>
+</table>
 
-        {% for entity in analysis.affected_entities %}
+<hr>
 
-            <li>{{ entity }}</li>
+<h1>TEST STRATEGY</h1>
 
-        {% endfor %}
+<table border="1" cellpadding="6">
 
-    </ul>
-    <h2>Reglas Funcionales</h2>
+    <tr>
+        <th>Riesgo</th>
+        <th>Prioridad</th>
+        <th>Cobertura</th>
+        <th>Tipo de prueba</th>
+        <th>Justificación</th>
+    </tr>
 
-    <ul>
+    {% for item in strategy.risk_strategies %}
+    <tr>
+        <td>{{ item.risk_title }}</td>
+        <td>{{ item.priority }}</td>
+        <td>{{ item.coverage | join(", ") }}</td>
+        <td>{{ item.recommended_test_type }}</td>
+        <td>{{ item.justification }}</td>
+    </tr>
+    {% endfor %}
 
-        {% for rule in analysis.business_rules %}
+</table>
 
-            <li>{{ rule }}</li>
+<hr>
 
-        {% endfor %}
+<h1>TEST DESIGN</h1>
 
-    </ul>
+<ul>
 
-    <h2>Dependencias</h2>
+    {% for tc in test_design %}
 
-    <ul>
+    <li>
 
-        {% for dependency in analysis.dependencies %}
+        <b>{{ tc.id }}</b>
 
-            <li>{{ dependency }}</li>
+        <br><br>
 
-        {% endfor %}
+        {{ tc.title }}
 
-    </ul>
+        <br>
 
-    <h2>Supuestos</h2>
+        {{ tc.description }}
 
-    <ul>
+        <br><br>
 
-        {% for assumption in analysis.assumptions %}
+        <b>Tipo:</b>
+        {{ tc.test_type }}
 
-            <li>{{ assumption }}</li>
+        <br>
 
-        {% endfor %}
+        <b>Escenario:</b>
+        {{ tc.scenario_type }}
 
-    </ul>
-    <h2>Riesgos Potenciales</h2>
+        <br>
 
-    <ul>
+        <b>Prioridad:</b>
+        {{ tc.priority }}
 
-        {% for risk in analysis.potential_risks %}
+        <br>
 
-            <li>{{ risk }}</li>
+        <b>Automatizable:</b>
+        {{ tc.automatable }}
 
-        {% endfor %}
+        <br><br>
 
-    </ul>
-    <h2>Mitigaciones QA Recomendadas</h2>
-
-    <table border="1" cellpadding="6">
-
-        <tr>
-            <th>Riesgo</th>
-            <th>Categoría</th>
-            <th>Mitigación QA</th>
-            <th>Tipo de Prueba</th>
-        </tr>
-
-        {% for item in analysis.risk_mitigations.mitigations %}
-
-        <tr>
-
-            <td>{{ item.risk }}</td>
-
-            <td>{{ item.risk_category|capitalize }}</td>
-
-            <td>{{ item.recommended_mitigation.title }}</td>
-
-            <td>{{ item.recommended_mitigation.test_type|capitalize }}</td>
-
-        </tr>
-
-        {% endfor %}
-
-    </table>
-
-    <hr>
-
-    <h1>TEST STRATEGY</h1>
-
-        <h2>Objetivo</h2>
-        <p>{{ strategy.objective }}</p>
-
-        <h2>Alcance</h2>
+        <b>Riesgos cubiertos</b>
 
         <ul>
-
-            {% for item in strategy.scope %}
-
-                <li>{{ item }}</li>
-
+            {% for risk in tc.covers_risks %}
+                <li>{{ risk }}</li>
             {% endfor %}
-
         </ul>
 
-        <h2>Estrategias Seleccionadas</h2>
+    </li>
 
-        <table border="1" cellpadding="6">
+    {% endfor %}
 
-            <tr>
-                <th>Estrategia</th>
-                <th>Estado</th>
-            </tr>
+</ul>
 
-            {% for key, value in strategy.execution_strategy.items() %}
+<hr>
 
-                {% if value %}
+<h1>AUTOMATION</h1>
 
-                <tr>
+<ul>
 
-                    <td>{{ key|capitalize }}</td>
+    {% for item in automation_decisions %}
 
-                    <td>Seleccionada</td>
+    <li>
 
-                </tr>
+        <b>{{ item.id }}</b>
 
-                {% endif %}
+        <br><br>
 
-            {% endfor %}
+        {{ item.title }}
 
-        </table>
+        <br><br>
 
-        <h2>Orden de Ejecución</h2>
+        <b>Decisión:</b>
+        {{ item.decision }}
 
-        <ol>
+        <br>
 
-            {% for item in strategy.execution_order %}
+        <b>Razón:</b>
+        {{ item.reason }}
 
-                <li>{{ item|capitalize }}</li>
+    </li>
 
-            {% endfor %}
+    {% endfor %}
 
-        </ol>
+</ul>
 
-        <h2>Cobertura Objetivo</h2>
+<hr>
 
-        <p>{{ strategy.coverage_goal }}</p>
+<h1>RISK COVERAGE</h1>
 
-        <h2>Justificación de la Estrategia</h2>
+<h2>{{ risk_coverage.coverage_percent }}%</h2>
 
-        <table border="1" cellpadding="6">
+<p><b>Total de riesgos:</b> {{ risk_coverage.total_risks }}</p>
 
-        <tr>
+<h3>Riesgos cubiertos</h3>
 
-            <th>Estrategia</th>
+<ul>
+    {% for risk in risk_coverage.covered_risks %}
+        <li>{{ risk }}</li>
+    {% endfor %}
+</ul>
 
-            <th>Regla de Negocio</th>
+<h3>Riesgos sin cubrir</h3>
 
-            <th>Riesgo Cubierto</th>
+<ul>
+    {% for risk in risk_coverage.uncovered_risks %}
+        <li>{{ risk }}</li>
+    {% endfor %}
+</ul>
 
-            <th>Justificación</th>
+<hr>
 
-        </tr>
-
-        {% for strategy_name, info in strategy.justification.items() %}
-
-        <tr>
-
-            <td>{{ strategy_name|capitalize }}</td>
-
-            <td>{{ info.business_rule }}</td>
-
-            <td>{{ info.risk_covered }}</td>
-
-            <td>{{ info.reason }}</td>
-
-        </tr>
-
-        {% endfor %}
-
-        </table>
-            <hr>
-
-    <h1>TEST DESIGN</h1>
-
-    <ul>
-
-        {% for tc in test_design %}
-
-        <li>
-
-            <b>{{ tc.id }}</b>
-
-            <br><br>
-
-            {{ tc.title }}
-
-            <br>
-
-            {{ tc.description }}
-
-            <br><br>
-
-            Tipo de Caso:
-            {{ tc.scenario_type }}
-
-            <br>
-
-            Técnica de Diseño:
-            {{ tc.design_technique }}
-
-            <br>
-
-            Estrategia de Ejecución:
-            {{ tc.execution_strategy }}
-
-            <br>
-
-            Prioridad:
-            {{ tc.priority }}
-
-            <br>
-
-            Tipo:
-            {{ tc.test_type }}
-
-            <br>
-
-            Automatizable:
-            {{ tc.automatable }}
-
-            <br>
-
-            <b>Riesgos Cubiertos:</b>
-
-            <ul>
-
-                {% for risk in tc.covers_risks %}
-
-                    <li>{{ risk }}</li>
-
-                {% endfor %}
-
-            </ul>
-
-            <br>
-
-        </li>
-
-        {% endfor %}
-
-    </ul>
-
-    <hr>
-
-    <h1>AUTOMATION DECISION</h1>
-
-    <ul>
-
-        {% for item in automation_decisions %}
-
-        <li>
-
-            <b>{{ item.id }}</b>
-
-            <br><br>
-
-            {{ item.title }}
-
-            <br><br>
-
-            Decisión:
-            {{ item.decision }}
-
-            <br>
-
-            Razón:
-            {{ item.reason }}
-
-            <br><br>
-
-        </li>
-
-        {% endfor %}
-
-    </ul>
-
-    <hr>
-
-    <h1>RISK COVERAGE</h1>
-
-    <h2>Coverage</h2>
-
-    <h1>{{ risk_coverage.coverage_percent }}%</h1>
-
-    <h2>Total Risks</h2>
-
-    <p>{{ risk_coverage.total_risks }}</p>
-
-    <h2>Covered Risks</h2>
-
-    <ul>
-
-        {% for risk in risk_coverage.covered_risks %}
-
-            <li>{{ risk }}</li>
-
-        {% endfor %}
-
-    </ul>
-
-    <h2>Uncovered Risks</h2>
-
-    <ul>
-
-        {% for risk in risk_coverage.uncovered_risks %}
-
-            <li>{{ risk }}</li>
-
-        {% endfor %}
-
-    </ul>
-
-    <hr>
-
-    <a href="/">
-        Volver
-    </a>
-
-</body>
-
-</html>
+<a href="/">Volver</a>

@@ -1,5 +1,4 @@
-from backend.risk_coverage_engine import RiskCoverageEngine
-
+from backend.engines.risk_coverage_engine import RiskCoverageEngine
 
 class GuardianPipeline:
 
@@ -39,7 +38,7 @@ class GuardianPipeline:
         # BUSINESS ANALYSIS
         # ==========================
 
-        analysis = self.business_agent.analyze_requirement(
+        business_analysis = self.business_agent.analyze_requirement(
             industry,
             product,
             module,
@@ -52,10 +51,8 @@ class GuardianPipeline:
         # RISK ANALYSIS
         # ==========================
 
-        analysis["risk_mitigations"] = (
-            self.risk_analyst.analyze_risks(
-                analysis
-            )
+        risk_analysis = self.risk_analyst.analyze_risks(
+            business_analysis
         )
 
         # ==========================
@@ -63,39 +60,36 @@ class GuardianPipeline:
         # ==========================
 
         strategy = self.strategy_engine.determine_strategy(
-            industry=industry,
-            product=product,
-            module=module,
-            business_description=business_description,
-            analysis=analysis
+            business_model=business_analysis,
+            risk_model=risk_analysis
         )
 
         # ==========================
         # TEST IDENTIFICATION
         # ==========================
 
-        analysis["recommended_tests"] = self.test_designer.generate_tests(
-            analysis=analysis,
+        recommended_tests = self.test_designer.generate_tests(
+            analysis=business_analysis,
             requirement=requirement,
             acceptance_criteria=acceptance_criteria
         )
+
+        business_analysis["recommended_tests"] = recommended_tests
 
         # ==========================
         # TEST DESIGN
         # ==========================
 
-        test_design = (
-            self.test_design_engine.generate_test_design(
-                analysis
-            )
+        test_design = self.test_design_engine.generate_test_design(
+            business_analysis
         )
 
         # ==========================
         # AUTOMATION
         # ==========================
 
-        automation_decisions = self.automation_engine.evaluate (
-            analysis,
+        automation_decisions = self.automation_engine.evaluate(
+            business_analysis,
             strategy,
             test_design
         )
@@ -104,21 +98,18 @@ class GuardianPipeline:
         # RISK COVERAGE
         # ==========================
 
-        risk_coverage = (
-            self.risk_coverage_engine.calculate(
-                analysis.get(
-                    "potential_risks",
-                    []
-                ),
-                test_design
-            )
+        risk_coverage = self.risk_coverage_engine.calculate(
+            risk_analysis["identified_risks"],
+            test_design
         )
 
         return {
-            "analysis": analysis,
+            "business_analysis": business_analysis,
+            "risk_analysis": risk_analysis,
             "strategy": strategy,
+            "recommended_tests": recommended_tests,
             "test_design": test_design,
             "automation_decisions": automation_decisions,
             "risk_coverage": risk_coverage
         }
-        
+            

@@ -1,13 +1,19 @@
 {
-  "mitigations": [
+  "identified_risks": [
     {
-      "risk": "string",
-      "risk_category": "data | integrity | security | fraud | integration | business | availability | performance | compliance",
-      "business_rule": "string",
+      "title": "string",
+
+      "description": "string",
+
+      "category": "business | integrity | integration | security | availability | performance | compliance",
+
+      "related_rule": "string",
+
+      "risk_source": "business_rule | constraint | invariant | invalid_state",
+
       "recommended_mitigation": {
-        "title": "string",
-        "justification": "string",
-        "test_type": "functional | integration | security | regression | performance | api | ui"
+        "description": "string",
+        "test_type": "functional | integration | api | ui | security | performance | regression"
       }
     }
   ]

@@ -1,40 +1,17 @@
 {
-  "objective": "string",
+  "risk_strategies": [
+    {
+      "risk_title": "string",
 
-  "scope": [
-    "string"
-  ],
+      "priority": "critical | high | medium | low",
 
-  "execution_strategy": {
-    "smoke": true,
-    "functional": true,
-    "integration": false,
-    "security": false,
-    "regression": true,
-    "api": false,
-    "ui": true,
-    "performance": false
-  },
+      "coverage": [
+        "positive | negative | boundary | alternate"
+      ],
 
-  "execution_order": [
-    "smoke | functional | integration | security | regression | api | ui | performance"
-  ],
+      "recommended_test_type": "functional | integration | api | ui | security | performance | regression",
 
-  "coverage_goal": "70% | 80% | 90% | 95% | 100%",
-
-  "justification": {
-    "strategy_name": {
-      "business_rule": "string",
-      "risk_covered": "string",
-      "reason": "string"
+      "justification": "string"
     }
-  },
-
-  "success_criteria": [
-    "string"
-  ],
-
-  "out_of_scope": [
-    "string"
   ]
 }

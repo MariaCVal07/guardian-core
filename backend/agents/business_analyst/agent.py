@@ -1,31 +1,36 @@
 from backend.core.llm_client import llm_call
 from backend.core.loaders import load_prompt, load_schema
+from backend.validators.business_model_normalizer import normalize_business_model
+
 
 class BusinessAnalystAgent:
 
     def analyze_requirement(
-
         self,
-
         industry,
-
         product,
-
         module,
-
         business_description,
-
         requirement,
-
         acceptance_criteria
     ):
 
         base_prompt = load_prompt("business_analyst.md")
+        schema = load_schema("business_analyst.json")
 
-        schema = load_schema("business_analyst.json")  
+        # Enumerar criterios de aceptación
+        criteria_lines = [
+            line.strip()
+            for line in acceptance_criteria.split("\n")
+            if line.strip()
+        ]
 
-        print(base_prompt[:500])
-        print(schema)
+        criteria_text = "\n".join(
+            [
+                f"AC-{i+1:02d}: {line}"
+                for i, line in enumerate(criteria_lines)
+            ]
+        )
 
         prompt = f"""
         {base_prompt}
@@ -44,58 +49,47 @@ class BusinessAnalystAgent:
         Descripción del negocio:
         {business_description}
 
-        Utiliza esta información como contexto funcional del SDD.
-
-        Todas las decisiones deben basarse primero en este contexto.
-
         # REQUERIMIENTO FUNCIONAL
 
         {requirement}
 
         # CRITERIOS DE ACEPTACIÓN
 
-        {acceptance_criteria}
+        {criteria_text}
 
-        Analiza el requerimiento utilizando el contexto del SDD.
+        # INSTRUCCIONES
 
-        Extrae únicamente información respaldada por:
-
-        - el SDD
-        - el requerimiento
-        - los criterios de aceptación
-
-        Si falta información, registra el supuesto en "assumptions".
-
-        No inventes comportamiento del sistema.
-
-        # FORMATO OBLIGATORIO DE RESPUESTA
+        Utiliza únicamente la información del SDD, el requerimiento y los criterios de aceptación.
 
         {schema}
         """
-                
+
         response = llm_call(
             system_prompt="""
-                Eres un Senior Business Analyst y Domain Modeling Expert.
+            Eres un Senior Business Analyst especializado en Domain Modeling.
 
-                Tu única responsabilidad es construir un modelo funcional del dominio.
+            Construye únicamente un modelo funcional del dominio.
 
-                Nunca diseñes pruebas.
+            No inventes información.
+            No inventes actores.
+            No inventes entidades.
+            No inventes reglas.
+            No inventes estados.
+            No completes procesos.
 
-                Nunca identifiques riesgos.
+            Si una información no puede justificarse mediante evidencia explícita,
+            simplemente omítela.
 
-                Nunca propongas estrategias.
-
-                Nunca inventes comportamiento.
-
-                Extrae únicamente información respaldada por el contexto.
-                """,
-                
+            Responde únicamente utilizando el JSON solicitado.
+            """,
             user_prompt=prompt,
             expect_json=True
         )
 
+        response = normalize_business_model(response)
+
         print("\n===== BUSINESS ANALYST OUTPUT =====")
         print(response)
         print("===================================\n")
-        
+
         return response

@@ -3,72 +3,31 @@
   "business_impact": "string",
   "criticality": "low | medium | high | critical",
 
-  "actors": [
-    "string"
-  ],
+  "actors": [],
 
-  "entities": [
-    "string"
-  ],
+  "entities": [],
 
-  "relationships": [
-    {
-      "source": "string",
-      "relationship": "string",
-      "target": "string"
-    }
-  ],
+  "relationships": [],
 
-  "business_rules": [
-    {
-      "rule": "String",
-      "evidence": "String"
-    }
-  ],
+  "business_rules": [],
 
-  "constraints": [
-    "string"
-  ],
+  "constraints": [],
 
-  "preconditions": [
-    "string"
-  ],
+  "preconditions": [],
 
-  "postconditions": [
-    "string"
-  ],
+  "postconditions": [],
 
-  "valid_states": [
-    "string"
-  ],
+  "valid_states": [],
 
-  "invalid_states": [
-    "string"
-  ],
+  "invalid_states": [],
 
-  "functional_flow": [
-    "string"
-  ],
+  "functional_flow": [],
 
-  "ambiguities": [
-    {
-    "description": "string",
-    "reason": "No está especificado en el requerimiento"
-    }
-  ],
+  "ambiguities": [],
 
-  "missing_information": [
-    "string"
-  ],
+  "missing_information": [],
 
-  "invariants": [
-    "string"
-  ],
+  "invariants": [],
 
-  "assumptions": [
-    {
-      "description": "string",
-      "reason": "string"
-    }
-  ]
+  "assumptions": []
 }

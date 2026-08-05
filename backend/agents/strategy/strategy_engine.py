@@ -1,4 +1,4 @@
-from backend.llm_client import llm_call
+from backend.core.llm_client import llm_call
 from backend.core.loaders import load_prompt, load_schema
 
 class StrategyEngine:
@@ -11,13 +11,9 @@ class StrategyEngine:
     """
 
     def determine_strategy(
-
         self,
-        industry,
-        product,
-        module,
-        business_description,
-        analysis,
+        business_model,
+        risk_model,
     ):
 
         base_prompt = load_prompt(
@@ -31,60 +27,13 @@ class StrategyEngine:
         prompt = f"""
         {base_prompt}
 
-        # CONTEXTO SDD
+        # BUSINESS MODEL
 
-        Industria:
-        {industry}
+        {business_model}
 
-        Producto:
-        {product}
+        # RISK MODEL
 
-        Módulo:
-        {module}
-
-        Descripción del negocio:
-        {business_description}
-
-        # CONTEXTO DEL SDD
-
-        Industria:
-        {industry}
-
-        Producto:
-        {product}
-
-        Módulo:
-        {module}
-
-        Descripción del negocio:
-        {business_description}
-
-        # ANÁLISIS FUNCIONAL
-
-        Criticidad:
-        {analysis.get("criticality")}
-
-        Impacto:
-        {analysis.get("business_impact")}
-
-        Flujos afectados:
-        {analysis.get("affected_flows")}
-
-        Riesgos:
-        {analysis.get("potential_risks")}
-
-        Mitigaciones:
-        {analysis.get("risk_mitigations")}
-
-        # INSTRUCCIONES
-
-        Genera una estrategia de pruebas completa utilizando el contexto del SDD.
-
-        No generes casos de prueba.
-
-        No tomes decisiones de automatización.
-
-        Responde únicamente utilizando el contrato JSON.
+        {risk_model}
 
         # FORMATO DE RESPUESTA
 
@@ -93,7 +42,25 @@ class StrategyEngine:
 
         response = llm_call(
 
-            system_prompt="Eres un QA Test Architect experto en Risk Based Testing.",
+            system_prompt="""
+            Eres el Test Strategy Agent de GUARDIÁN QA.
+
+            Tu única responsabilidad es construir una estrategia de cobertura a partir del Business Model y del Risk Model.
+
+            No vuelvas a interpretar el requerimiento.
+
+            No utilices el contexto del SDD.
+
+            No inventes riesgos.
+
+            No generes escenarios de prueba.
+
+            No generes casos de prueba.
+
+            No propongas automatización.
+
+            Responde únicamente utilizando el contrato JSON.
+            """,
 
             user_prompt=prompt,
 
