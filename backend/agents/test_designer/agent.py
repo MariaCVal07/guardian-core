@@ -6,9 +6,9 @@ class TestDesignerAgent:
 
     def generate_tests(
         self,
-        analysis,
-        requirement,
-        acceptance_criteria
+        business_model,
+        risk_model,
+        strategy
     ):
 
         base_prompt = load_prompt(
@@ -24,17 +24,17 @@ class TestDesignerAgent:
 
         # CONTEXTO
 
-        # ANÁLISIS FUNCIONAL
+        # BUSINESS MODEL
 
-        {analysis}
+        {business_model}
 
-        # REQUERIMIENTO
+        # RISK MODEL
 
-        {requirement}
+        {risk_model}
 
-        # CRITERIOS DE ACEPTACIÓN
+        # TEST STRATEGY
 
-        {acceptance_criteria}
+        {strategy}
         
         # RESPONDE ÚNICAMENTE EN JSON
 
@@ -52,7 +52,18 @@ class TestDesignerAgent:
         """
 
         response = llm_call(
-            system_prompt="Eres un QA Senior experto en Test Design.",
+            system_prompt= """
+            Eres el Test Designer Agent de GUARDIÁN QA.
+
+            Tu única responsabilidad es diseñar los casos de prueba a partir del Business Model, el Risk Model y la Test Strategy.
+
+            No vuelvas a interpretar el requerimiento.
+            No utilices el SDD.
+            No inventes reglas de negocio.
+            No inventes riesgos.
+            Responde únicamente con el JSON solicitado.
+            """,
+            
             user_prompt=prompt,
             expect_json=True
         )

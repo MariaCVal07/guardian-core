@@ -2,20 +2,16 @@
   "tests": [
     {
       "id": "TC-001",
-
       "title": "string",
-
       "objective": "string",
-
       "description": "string",
 
       "business_rule": "string",
+      "risk_title": "string",
 
-      "risk_covered": "string",
+      "scenario": "happy_path | negative | edge_case | alternate | boundary",
 
-      "scenario": "happy_path | negative | edge_case | security | integration",
-
-      "test_type": "functional | integration | security | regression | api | ui | smoke",
+      "test_type": "functional | integration | api | ui | security | performance | regression",
 
       "priority": "low | medium | high | critical"
     }

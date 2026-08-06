@@ -69,9 +69,9 @@ class GuardianPipeline:
         # ==========================
 
         recommended_tests = self.test_designer.generate_tests(
-            analysis=business_analysis,
-            requirement=requirement,
-            acceptance_criteria=acceptance_criteria
+            business_model=business_analysis,
+            risk_model=risk_analysis,
+            strategy=strategy
         )
 
         business_analysis["recommended_tests"] = recommended_tests

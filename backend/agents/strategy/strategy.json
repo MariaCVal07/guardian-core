@@ -2,15 +2,16 @@
   "risk_strategies": [
     {
       "risk_title": "string",
-
-      "priority": "critical | high | medium | low",
-
-      "coverage": [
-        "positive | negative | boundary | alternate"
+      "priority": "low | medium | high | critical",
+      "recommended_test_type": "functional | integration | api | ui | security | regression | smoke",
+      "test_objectives": [
+        {
+          "id": "OBJ-001",
+          "scenario": "positive | negative | boundary | edge_case",
+          "objective": "string",
+          "reason": "string"
+        }
       ],
-
-      "recommended_test_type": "functional | integration | api | ui | security | performance | regression",
-
       "justification": "string"
     }
   ]
