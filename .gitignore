@@ -19,3 +19,4 @@ Thumbs.db
 
 # macOS
 .DS_Store
+.venv/
