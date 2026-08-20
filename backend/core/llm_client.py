@@ -19,13 +19,14 @@ def get_client():
     return _client
 
 
-def llm_call(system_prompt, user_prompt, expect_json=False):
+def llm_call(system_prompt, user_prompt, expect_json=False, _retry=True):
     """
     Wrapper para llamadas al LLM.
 
     - Imprime la respuesta completa.
     - Extrae automáticamente el JSON aunque el modelo
       agregue texto o markdown.
+    - Reintenta una vez si el JSON falla.
     """
 
     client = get_client()
@@ -44,7 +45,8 @@ def llm_call(system_prompt, user_prompt, expect_json=False):
                     "content": user_prompt
                 }
             ],
-            temperature=CONFIG["llm_temperature"]
+            temperature=CONFIG["llm_temperature"],
+            max_tokens=5000
         )
 
         if not response.choices:
@@ -108,6 +110,10 @@ def llm_call(system_prompt, user_prompt, expect_json=False):
         print("===================================\n")
 
         print(f"[GUARDIAN ERROR] JSON inválido: {e}")
+
+        if _retry:
+            print("[GUARDIAN] Reintentando llamada al LLM...")
+            return llm_call(system_prompt, user_prompt, expect_json=expect_json, _retry=False)
 
         return None
 

@@ -3,7 +3,7 @@
     {
       "risk_title": "string",
       "priority": "low | medium | high | critical",
-      "recommended_test_type": "functional | integration | api | ui | security | regression | smoke",
+      "recommended_test_type": "functional | integration | api | ui | security | regression | performance",
       "test_objectives": [
         {
           "id": "OBJ-001",

@@ -47,7 +47,9 @@ class AutomationEngine:
         """
 
         response = llm_call(
-            system_prompt="Eres un QA Automation Architect.",
+            system_prompt="""Eres un QA Automation Architect.
+
+Responde siempre en el mismo idioma del contexto recibido (Business Model, Risk Model, Test Strategy o SDD original). Si el contexto está en español, responde en español. Si está en otro idioma, responde en ese idioma. Nunca traduzcas el contenido recibido. Los nombres de los campos JSON (keys) deben mantenerse siempre en inglés, tal como los define el schema.""",
             user_prompt=prompt,
             expect_json=True
         )
