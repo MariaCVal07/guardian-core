@@ -34,10 +34,10 @@ class TestClassifier:
         """
         Selecciona la técnica de diseño basada en tipo de escenario y prueba.
         """
-        if scenario_type == "Edge Case":
+        if scenario_type in ("edge_case", "boundary"):
             return "Boundary Value Analysis"
 
-        if scenario_type == "Negative":
+        if scenario_type == "negative":
             return "Error Guessing"
 
         if test_type == "integration":
@@ -171,27 +171,35 @@ class TestDesignEngine:
         self.risk_mapper = RiskMapper()
         self.classifier = TestClassifier()
 
-    def generate_test_design(self, analysis):
+    def generate_test_design(self, analysis, risk_analysis):
         """
         Genera diseño de pruebas a partir del análisis funcional.
-        
+
         Args:
             analysis: Dict con análisis funcional y recomendaciones de pruebas
-            
+            risk_analysis: Dict con los riesgos identificados (risk_analyst.json),
+                usado como respaldo para mapear riesgos por palabras clave
+                cuando una recomendación no trae su propio risk_title.
+
         Returns:
             List de casos de prueba diseñados
         """
         tests = []
         counter = 1
 
-        risks = analysis.get("potential_risks", [])
+        identified_risks = risk_analysis.get("identified_risks", [])
+        risk_titles = [
+            risk.get("title")
+            for risk in identified_risks
+            if risk.get("title")
+        ]
 
         for recommendation in analysis["recommended_tests"]:
             title = recommendation.get("title")
             objective = recommendation.get("objective")
             description = recommendation.get("description")
             business_rule = recommendation.get("business_rule")
-            risk_covered = recommendation.get("risk_covered")
+            risk_covered = recommendation.get("risk_title")
             scenario = recommendation.get("scenario")
             test_type = recommendation.get("test_type")
             priority = recommendation.get("priority")
@@ -217,7 +225,7 @@ class TestDesignEngine:
                 covered_risks = self.risk_mapper.map_risks_to_test(
                     title,
                     description,
-                    risks
+                    risk_titles
                 )
 
             tests.append({

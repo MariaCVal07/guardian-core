@@ -1,7 +1,7 @@
 def normalize_business_model(model: dict) -> dict:
 
     if not model:
-        return {}
+        model = {}
 
     # -----------------------------
     # Garantizar listas

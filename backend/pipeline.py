@@ -55,6 +55,12 @@ class GuardianPipeline:
             business_analysis
         )
 
+        if not risk_analysis:
+            # El LLM falló o devolvió una respuesta inválida.
+            # Se usa el mismo contrato vacío de risk_analyst.json
+            # para no propagar None a las siguientes etapas.
+            risk_analysis = {"identified_risks": []}
+
         # ==========================
         # TEST STRATEGY
         # ==========================
@@ -63,6 +69,10 @@ class GuardianPipeline:
             business_model=business_analysis,
             risk_model=risk_analysis
         )
+
+        if not strategy:
+            # Mismo criterio: contrato vacío de strategy.json en vez de None.
+            strategy = {"risk_strategies": []}
 
         # ==========================
         # TEST IDENTIFICATION
@@ -81,7 +91,8 @@ class GuardianPipeline:
         # ==========================
 
         test_design = self.test_design_engine.generate_test_design(
-            business_analysis
+            business_analysis,
+            risk_analysis
         )
 
         # ==========================
